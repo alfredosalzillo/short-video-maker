@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState } from "react";
+import { type FC, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
@@ -32,27 +32,31 @@ import {
   VoiceEnum,
 } from "../../types/shorts";
 import AskAiDialog from "../components/AskAiDialog";
+import { useLocalStorageState } from "../plugins/storage/useLocalStorageState";
 
 interface SceneFormData {
   text: string;
   searchTerms: string; // Changed to string
 }
 
-const VideoCreator: React.FC = () => {
+const VideoCreator: FC = () => {
   const navigate = useNavigate();
   const dialogs = useDialogs();
   const [scenes, setScenes] = useState<SceneFormData[]>([
     { text: "", searchTerms: "" },
   ]);
-  const [config, setConfig] = useState<RenderConfig>({
-    paddingBack: 1500,
-    music: MusicMoodEnum.chill,
-    captionPosition: CaptionPositionEnum.bottom,
-    captionBackgroundColor: "blue",
-    voice: VoiceEnum.af_heart,
-    orientation: OrientationEnum.portrait,
-    musicVolume: MusicVolumeEnum.high,
-  });
+  const [config, setConfig] = useLocalStorageState<RenderConfig>(
+    "video_creator_config",
+    {
+      paddingBack: 1500,
+      music: MusicMoodEnum.chill,
+      captionPosition: CaptionPositionEnum.bottom,
+      captionBackgroundColor: "blue",
+      voice: VoiceEnum.af_heart,
+      orientation: OrientationEnum.portrait,
+      musicVolume: MusicVolumeEnum.high,
+    },
+  );
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
