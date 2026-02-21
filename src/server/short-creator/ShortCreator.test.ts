@@ -103,10 +103,12 @@ vi.mock("kokoro-js", () => {
         ),
       }),
     },
-    TextSplitterStream: vi.fn().mockImplementation(() => ({
-      push: vi.fn(),
-      close: vi.fn(),
-    })),
+    TextSplitterStream: vi.fn().mockImplementation(function() {
+      return {
+        push: vi.fn(),
+        close: vi.fn(),
+      };
+    }),
   };
 });
 
@@ -250,7 +252,7 @@ test("test me", async () => {
   resolveRenderPromise();
   // Wait for the next tick to allow processQueue's finally block to run
   await new Promise((resolve) => setTimeout(resolve, 100));
-  // force shifting for the test as something is blocking the queue in the test environment
+  // biome-ignore lint/suspicious/noExplicitAny: mocking private queue property
   const scAny = shortCreator as any;
   if (scAny.queue.length > 0) {
     scAny.queue.shift();
