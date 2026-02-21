@@ -8,10 +8,12 @@ import {
   Button,
   CircularProgress,
   Alert,
-  Grid
+  Grid,
+  TextField
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DownloadIcon from '@mui/icons-material/Download';
+import CopyButton from '../components/CopyButton';
 import { VideoStatus, VideoMetadata } from '../../types/shorts';
 
 const VideoDetails: React.FC = () => {
@@ -187,33 +189,11 @@ const VideoDetails: React.FC = () => {
 
       <Paper sx={{ p: 3 }}>
         <Grid container spacing={2} mb={3}>
-          {video?.title && (
-            <Grid item xs={12}>
-              <Typography variant="body2" color="text.secondary">
-                Title
-              </Typography>
-              <Typography variant="h6">
-                {video.title}
-              </Typography>
-            </Grid>
-          )}
-          {video?.description && (
-            <Grid item xs={12}>
-              <Typography variant="body2" color="text.secondary">
-                Description
-              </Typography>
-              <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
-                {video.description}
-              </Typography>
-            </Grid>
-          )}
           <Grid item xs={12} sm={6}>
             <Typography variant="body2" color="text.secondary">
               Video ID
             </Typography>
-            <Typography variant="body1">
-              {videoId || 'Unknown'}
-            </Typography>
+            <Typography variant="body1">{videoId || "Unknown"}</Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant="body2" color="text.secondary">
@@ -222,14 +202,50 @@ const VideoDetails: React.FC = () => {
             <Typography
               variant="body1"
               color={
-                video?.status === 'ready' ? 'success.main' :
-                video?.status === 'processing' ? 'info.main' :
-                video?.status === 'failed' ? 'error.main' : 'text.primary'
+                video?.status === "ready"
+                  ? "success.main"
+                  : video?.status === "processing"
+                    ? "info.main"
+                    : video?.status === "failed"
+                      ? "error.main"
+                      : "text.primary"
               }
             >
-              {capitalizeFirstLetter(video?.status || 'unknown')}
+              {capitalizeFirstLetter(video?.status || "unknown")}
             </Typography>
           </Grid>
+          {video?.title && (
+            <Grid item xs={12}>
+              <TextField
+                label="Title"
+                value={video.title}
+                fullWidth
+                disabled
+                InputProps={{
+                  endAdornment: <CopyButton value={video.title} edge="end" />,
+                }}
+                helperText="Only supported by YouTube"
+              />
+            </Grid>
+          )}
+          {video?.description && (
+            <Grid item xs={12}>
+              <TextField
+                label="Description"
+                value={video.description}
+                fullWidth
+                multiline
+                rows={4}
+                disabled
+                InputProps={{
+                  endAdornment: (
+                    <CopyButton value={video.description} edge="end" />
+                  ),
+                }}
+                helperText="Supported by TikTok, YouTube, Instagram"
+              />
+            </Grid>
+          )}
         </Grid>
 
         {renderContent()}
