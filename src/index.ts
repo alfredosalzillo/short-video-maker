@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import fs from "fs-extra";
 import { Config } from "./config";
 import { logger } from "./logger";
@@ -85,6 +83,9 @@ async function main() {
   const server = new Server(config, shortCreator);
   const _app = server.start();
 
+  _app.on("close", () => {
+    logger.info("server closed");
+  });
   // todo add shutdown handler
 }
 

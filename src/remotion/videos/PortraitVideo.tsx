@@ -1,7 +1,7 @@
 import { loadFont } from "@remotion/google-fonts/BarlowCondensed";
 import {
   AbsoluteFill,
-  Audio,
+  Html5Audio,
   OffthreadVideo,
   Sequence,
   useCurrentFrame,
@@ -50,11 +50,11 @@ export const PortraitVideo: React.FC<z.infer<typeof shortVideoSchema>> = ({
 
   return (
     <AbsoluteFill style={{ backgroundColor: "white" }}>
-      <Audio
+      <Html5Audio
         loop
         src={music.url}
-        startFrom={music.start * fps}
-        endAt={music.end * fps}
+        trimBefore={music.start * fps}
+        trimAfter={music.end * fps}
         volume={() => musicVolume}
         muted={musicMuted}
       />
@@ -88,7 +88,7 @@ export const PortraitVideo: React.FC<z.infer<typeof shortVideoSchema>> = ({
             key={`scene-${scene.audio.url}-${i}`}
           >
             <OffthreadVideo src={video} muted />
-            <Audio src={audio.url} />
+            <Html5Audio src={audio.url} />
             {pages.map((page, j) => {
               return (
                 <Sequence

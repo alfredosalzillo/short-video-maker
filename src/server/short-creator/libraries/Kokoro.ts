@@ -75,7 +75,6 @@ export class Kokoro {
   }
 
   listAvailableVoices(): Voices[] {
-    const voices = Object.values(VoiceEnum) as Voices[];
-    return voices;
+    return Object.values(VoiceEnum) as Voices[];
   }
 }
