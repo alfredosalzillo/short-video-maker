@@ -143,12 +143,28 @@ export type CaptionPage = {
 };
 
 export const createShortInput = z.object({
+  title: z
+    .string()
+    .max(100)
+    .optional()
+    .describe("Title of the video, only supported by YouTube. Cannot contain < or > symbols."),
+  description: z
+    .string()
+    .optional()
+    .describe("Description of the video, supported by TikTok, YouTube, Instagram"),
   scenes: z.array(sceneInput).describe("Each scene to be created"),
   config: renderConfig.describe("Configuration for rendering the video"),
 });
 export type CreateShortInput = z.infer<typeof createShortInput>;
 
 export type VideoStatus = "processing" | "ready" | "failed";
+
+export interface VideoMetadata {
+  id: string;
+  title?: string;
+  description?: string;
+  status: VideoStatus;
+}
 
 export type Music = {
   file: string;

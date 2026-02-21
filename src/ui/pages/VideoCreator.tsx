@@ -49,6 +49,8 @@ const VideoCreator: React.FC = () => {
     orientation: OrientationEnum.portrait,
     musicVolume: MusicVolumeEnum.high,
   });
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -123,6 +125,8 @@ const VideoCreator: React.FC = () => {
       const response = await axios.post("/api/short-video", {
         scenes: apiScenes,
         config,
+        title,
+        description,
       });
 
       navigate(`/video/${response.data.videoId}`);
@@ -160,6 +164,41 @@ const VideoCreator: React.FC = () => {
       )}
 
       <form onSubmit={handleSubmit}>
+        <Paper sx={{ p: 3, mb: 3 }}>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Title"
+                value={title}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/[<>]/g, "");
+                  setTitle(val.slice(0, 100));
+                }}
+                helperText={
+                  <>
+                    Only supported by YouTube
+                    <br />
+                    Max 100 characters. Cannot contain &lt; or &gt; symbols.
+                  </>
+                }
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Description"
+                multiline
+                rows={3}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                helperText="Supported by TikTok, YouTube, Instagram"
+              />
+            </Grid>
+          </Grid>
+        </Paper>
+
         <Typography variant="h5" component="h2" gutterBottom>
           Scenes
         </Typography>

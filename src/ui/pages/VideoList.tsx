@@ -1,32 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { 
-  Box, 
-  Typography, 
-  Paper, 
-  Button, 
-  CircularProgress, 
+import axios from "axios";
+import {
+  Box,
+  Typography,
+  Paper,
+  Button,
+  CircularProgress,
   Alert,
   List,
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
   IconButton,
-  Divider
-} from '@mui/material';
+  Divider,
+  ListItemButton,
+} from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-interface VideoItem {
-  id: string;
-  status: string;
-}
+import { VideoMetadata } from '../../types/shorts';
 
 const VideoList: React.FC = () => {
   const navigate = useNavigate();
-  const [videos, setVideos] = useState<VideoItem[]>([]);
+  const [videos, setVideos] = useState<VideoMetadata[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -56,7 +54,7 @@ const VideoList: React.FC = () => {
 
   const handleDeleteVideo = async (id: string, event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    
+
     try {
       await axios.delete(`/api/short-video/${id}`);
       fetchVideos();
@@ -85,27 +83,27 @@ const VideoList: React.FC = () => {
         <Typography variant="h4" component="h1">
           Your Videos
         </Typography>
-        <Button 
-          variant="contained" 
-          color="primary" 
+        <Button
+          variant="contained"
+          color="primary"
           startIcon={<AddIcon />}
           onClick={handleCreateNew}
         >
           Create New Video
         </Button>
       </Box>
-      
+
       {error && (
         <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>
       )}
-      
+
       {videos.length === 0 ? (
         <Paper sx={{ p: 4, textAlign: 'center' }}>
           <Typography variant="body1" color="text.secondary" gutterBottom>
             You haven't created any videos yet.
           </Typography>
-          <Button 
-            variant="outlined" 
+          <Button
+            variant="outlined"
             startIcon={<AddIcon />}
             onClick={handleCreateNew}
             sx={{ mt: 2 }}
@@ -117,42 +115,60 @@ const VideoList: React.FC = () => {
         <Paper>
           <List>
             {videos.map((video, index) => {
-              const videoId = video?.id || '';
-              const videoStatus = video?.status || 'unknown';
-              
+              const videoId = video?.id || "";
+              const videoStatus = video?.status || "unknown";
+              const videoTitle = video?.title + ` (Video ${videoId.substring(0, 8)}...)` || `Video ${videoId.substring(0, 8)}...`;
+              const videoDescription = video?.description;
+
               return (
                 <div key={videoId}>
                   {index > 0 && <Divider />}
-                  <ListItem 
-                    button 
+                  <ListItemButton
                     onClick={() => handleVideoClick(videoId)}
-                    sx={{ 
+                    sx={{
                       py: 2,
-                      '&:hover': {
-                        backgroundColor: 'rgba(0, 0, 0, 0.04)'
-                      }
+                      "&:hover": {
+                        backgroundColor: "rgba(0, 0, 0, 0.04)",
+                      },
                     }}
                   >
                     <ListItemText
-                      primary={`Video ${videoId.substring(0, 8)}...`}
+                      primary={videoTitle}
                       secondary={
-                        <Typography
-                          component="span"
-                          variant="body2"
-                          color={
-                            videoStatus === 'ready' ? 'success.main' : 
-                            videoStatus === 'processing' ? 'info.main' : 
-                            videoStatus === 'failed' ? 'error.main' : 'text.secondary'
-                          }
-                        >
-                          {capitalizeFirstLetter(videoStatus)}
-                        </Typography>
+                        <Box component="span">
+                          {videoDescription && (
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              noWrap
+                              sx={{ maxWidth: "80%" }}
+                            >
+                              {videoDescription}
+                            </Typography>
+                          )}
+                          <Typography
+                            component="span"
+                            variant="body2"
+                            color={
+                              videoStatus === "ready"
+                                ? "success.main"
+                                : videoStatus === "processing"
+                                  ? "info.main"
+                                  : videoStatus === "failed"
+                                    ? "error.main"
+                                    : "text.secondary"
+                            }
+                            sx={{ display: "block", mb: 0.5 }}
+                          >
+                            {capitalizeFirstLetter(videoStatus)}
+                          </Typography>
+                        </Box>
                       }
                     />
                     <ListItemSecondaryAction>
-                      {videoStatus === 'ready' && (
-                        <IconButton 
-                          edge="end" 
+                      {videoStatus === "ready" && (
+                        <IconButton
+                          edge="end"
                           aria-label="play"
                           onClick={() => handleVideoClick(videoId)}
                           color="primary"
@@ -160,9 +176,9 @@ const VideoList: React.FC = () => {
                           <PlayArrowIcon />
                         </IconButton>
                       )}
-                      <IconButton 
-                        edge="end" 
-                        aria-label="delete" 
+                      <IconButton
+                        edge="end"
+                        aria-label="delete"
                         onClick={(e) => handleDeleteVideo(videoId, e)}
                         color="error"
                         sx={{ ml: 1 }}
@@ -170,7 +186,7 @@ const VideoList: React.FC = () => {
                         <DeleteIcon />
                       </IconButton>
                     </ListItemSecondaryAction>
-                  </ListItem>
+                  </ListItemButton>
                 </div>
               );
             })}
@@ -181,4 +197,4 @@ const VideoList: React.FC = () => {
   );
 };
 
-export default VideoList; 
+export default VideoList;

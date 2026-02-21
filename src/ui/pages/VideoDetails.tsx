@@ -1,57 +1,56 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { 
-  Box, 
-  Typography, 
-  Paper, 
-  Button, 
-  CircularProgress, 
+import {
+  Box,
+  Typography,
+  Paper,
+  Button,
+  CircularProgress,
   Alert,
   Grid
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DownloadIcon from '@mui/icons-material/Download';
-import { VideoStatus } from '../../types/shorts';
+import { VideoStatus, VideoMetadata } from '../../types/shorts';
 
 const VideoDetails: React.FC = () => {
   const { videoId } = useParams<{ videoId: string }>();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [status, setStatus] = useState<VideoStatus>('processing');
+  const [video, setVideo] = useState<VideoMetadata | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const isMounted = useRef(true);
 
   const checkVideoStatus = async () => {
     try {
       const response = await axios.get(`/api/short-video/${videoId}/status`);
-      const videoStatus = response.data.status;
+      const videoData = response.data;
 
       if (isMounted.current) {
-        setStatus(videoStatus || 'unknown');
-        console.log("videoStatus", videoStatus);
-        
-        if (videoStatus !== 'processing') {
+        setVideo(videoData);
+        console.log("videoStatus", videoData.status);
+
+        if (videoData.status !== 'processing') {
           console.log("video is not processing");
           console.log("interval", intervalRef.current);
-          
+
           if (intervalRef.current) {
             console.log("clearing interval");
             clearInterval(intervalRef.current);
             intervalRef.current = null;
           }
         }
-        
+
         setLoading(false);
       }
     } catch (error) {
       if (isMounted.current) {
-        setError('Failed to fetch video status');
-        setStatus('failed');
+        setError('Failed to fetch video details');
         setLoading(false);
         console.error('Error fetching video status:', error);
-        
+
         if (intervalRef.current) {
           clearInterval(intervalRef.current);
           intervalRef.current = null;
@@ -62,11 +61,11 @@ const VideoDetails: React.FC = () => {
 
   useEffect(() => {
     checkVideoStatus();
-    
+
     intervalRef.current = setInterval(() => {
       checkVideoStatus();
     }, 5000);
-    
+
     return () => {
       isMounted.current = false;
       if (intervalRef.current) {
@@ -93,7 +92,7 @@ const VideoDetails: React.FC = () => {
       return <Alert severity="error">{error}</Alert>;
     }
 
-    if (status === 'processing') {
+    if (video?.status === 'processing') {
       return (
         <Box textAlign="center" py={4}>
           <CircularProgress size={60} sx={{ mb: 2 }} />
@@ -105,7 +104,7 @@ const VideoDetails: React.FC = () => {
       );
     }
 
-    if (status === 'ready') {
+    if (video?.status === 'ready') {
       return (
         <Box>
           <Box mb={3} textAlign="center">
@@ -113,9 +112,9 @@ const VideoDetails: React.FC = () => {
               Your video is ready!
             </Typography>
           </Box>
-          
-          <Box sx={{ 
-            position: 'relative', 
+
+          <Box sx={{
+            position: 'relative',
             paddingTop: '56.25%',
             mb: 3,
             backgroundColor: '#000'
@@ -133,14 +132,14 @@ const VideoDetails: React.FC = () => {
               src={`/api/short-video/${videoId}`}
             />
           </Box>
-          
+
           <Box textAlign="center">
-            <Button 
+            <Button
               component="a"
               href={`/api/short-video/${videoId}`}
               download
-              variant="contained" 
-              color="primary" 
+              variant="contained"
+              color="primary"
               startIcon={<DownloadIcon />}
               sx={{ textDecoration: 'none' }}
             >
@@ -151,7 +150,7 @@ const VideoDetails: React.FC = () => {
       );
     }
 
-    if (status === 'failed') {
+    if (video?.status === 'failed') {
       return (
         <Alert severity="error" sx={{ mb: 3 }}>
           Video processing failed. Please try again with different settings.
@@ -174,8 +173,8 @@ const VideoDetails: React.FC = () => {
   return (
     <Box maxWidth="md" mx="auto" py={4}>
       <Box display="flex" alignItems="center" mb={3}>
-        <Button 
-          startIcon={<ArrowBackIcon />} 
+        <Button
+          startIcon={<ArrowBackIcon />}
           onClick={handleBack}
           sx={{ mr: 2 }}
         >
@@ -188,6 +187,26 @@ const VideoDetails: React.FC = () => {
 
       <Paper sx={{ p: 3 }}>
         <Grid container spacing={2} mb={3}>
+          {video?.title && (
+            <Grid item xs={12}>
+              <Typography variant="body2" color="text.secondary">
+                Title
+              </Typography>
+              <Typography variant="h6">
+                {video.title}
+              </Typography>
+            </Grid>
+          )}
+          {video?.description && (
+            <Grid item xs={12}>
+              <Typography variant="body2" color="text.secondary">
+                Description
+              </Typography>
+              <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
+                {video.description}
+              </Typography>
+            </Grid>
+          )}
           <Grid item xs={12} sm={6}>
             <Typography variant="body2" color="text.secondary">
               Video ID
@@ -200,23 +219,23 @@ const VideoDetails: React.FC = () => {
             <Typography variant="body2" color="text.secondary">
               Status
             </Typography>
-            <Typography 
-              variant="body1" 
+            <Typography
+              variant="body1"
               color={
-                status === 'ready' ? 'success.main' : 
-                status === 'processing' ? 'info.main' : 
-                status === 'failed' ? 'error.main' : 'text.primary'
+                video?.status === 'ready' ? 'success.main' :
+                video?.status === 'processing' ? 'info.main' :
+                video?.status === 'failed' ? 'error.main' : 'text.primary'
               }
             >
-              {capitalizeFirstLetter(status)}
+              {capitalizeFirstLetter(video?.status || 'unknown')}
             </Typography>
           </Grid>
         </Grid>
-        
+
         {renderContent()}
       </Paper>
     </Box>
   );
 };
 
-export default VideoDetails; 
+export default VideoDetails;

@@ -19,6 +19,7 @@ import type {
   RenderConfig,
   Scene,
   VideoStatus,
+  VideoMetadata,
   MusicMoodEnum,
   MusicTag,
   MusicForVideo,
@@ -29,6 +30,8 @@ export class ShortCreator {
     sceneInput: SceneInput[];
     config: RenderConfig;
     id: string;
+    title?: string;
+    description?: string;
   }[] = [];
   constructor(
     private config: Config,
@@ -51,13 +54,49 @@ export class ShortCreator {
     return "failed";
   }
 
-  public addToQueue(sceneInput: SceneInput[], config: RenderConfig): string {
+  public getVideoDetails(id: string): VideoMetadata {
+    const status = this.status(id);
+    const metadataPath = path.join(this.config.videosDirPath, `${id}.json`);
+
+    let title: string | undefined;
+    let description: string | undefined;
+
+    const inQueue = this.queue.find((item) => item.id === id);
+    if (inQueue) {
+      title = inQueue.title;
+      description = inQueue.description;
+    } else if (fs.existsSync(metadataPath)) {
+      try {
+        const metadata = fs.readJsonSync(metadataPath);
+        title = metadata.title;
+        description = metadata.description;
+      } catch (error) {
+        logger.error({ id, error }, "Error reading video metadata");
+      }
+    }
+
+    return {
+      id,
+      status,
+      title,
+      description,
+    };
+  }
+
+  public addToQueue(
+    sceneInput: SceneInput[],
+    config: RenderConfig,
+    title?: string,
+    description?: string,
+  ): string {
     // todo add mutex lock
     const id = cuid();
     this.queue.push({
       sceneInput,
       config,
       id,
+      title,
+      description,
     });
     if (this.queue.length === 1) {
       this.processQueue();
@@ -70,13 +109,13 @@ export class ShortCreator {
     if (this.queue.length === 0) {
       return;
     }
-    const { sceneInput, config, id } = this.queue[0];
+    const { sceneInput, config, id, title, description } = this.queue[0];
     logger.debug(
-      { sceneInput, config, id },
+      { sceneInput, config, id, title, description },
       "Processing video item in the queue",
     );
     try {
-      await this.createShort(id, sceneInput, config);
+      await this.createShort(id, sceneInput, config, title, description);
       logger.debug({ id }, "Video created successfully");
     } catch (error: unknown) {
       logger.error(error, "Error creating video");
@@ -86,15 +125,33 @@ export class ShortCreator {
     }
   }
 
+  private async saveMetadata(
+    videoId: string,
+    title?: string,
+    description?: string,
+  ): Promise<void> {
+    const metadataPath = path.join(this.config.videosDirPath, `${videoId}.json`);
+    try {
+      await fs.writeJson(metadataPath, { title, description });
+      logger.debug({ videoId, metadataPath }, "Video metadata saved");
+    } catch (error) {
+      logger.error({ videoId, error }, "Error saving video metadata");
+    }
+  }
+
   private async createShort(
     videoId: string,
     inputScenes: SceneInput[],
     config: RenderConfig,
+    title?: string,
+    description?: string,
   ): Promise<string> {
     logger.debug(
       {
         inputScenes,
         config,
+        title,
+        description,
       },
       "Creating short video",
     );
@@ -215,6 +272,8 @@ export class ShortCreator {
       fs.removeSync(file);
     }
 
+    await this.saveMetadata(videoId, title, description);
+
     return videoId;
   }
 
@@ -254,8 +313,8 @@ export class ShortCreator {
     return Array.from(tags.values());
   }
 
-  public listAllVideos(): { id: string; status: VideoStatus }[] {
-    const videos: { id: string; status: VideoStatus }[] = [];
+  public listAllVideos(): VideoMetadata[] {
+    const videos: VideoMetadata[] = [];
 
     // Check if videos directory exists
     if (!fs.existsSync(this.config.videosDirPath)) {
@@ -269,14 +328,7 @@ export class ShortCreator {
     for (const file of files) {
       if (file.endsWith(".mp4")) {
         const videoId = file.replace(".mp4", "");
-
-        let status: VideoStatus = "ready";
-        const inQueue = this.queue.find((item) => item.id === videoId);
-        if (inQueue) {
-          status = "processing";
-        }
-
-        videos.push({ id: videoId, status });
+        videos.push(this.getVideoDetails(videoId));
       }
     }
 
@@ -284,7 +336,12 @@ export class ShortCreator {
     for (const queueItem of this.queue) {
       const existingVideo = videos.find((v) => v.id === queueItem.id);
       if (!existingVideo) {
-        videos.push({ id: queueItem.id, status: "processing" });
+        videos.push({
+          id: queueItem.id,
+          status: "processing",
+          title: queueItem.title,
+          description: queueItem.description,
+        });
       }
     }
 

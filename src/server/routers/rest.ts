@@ -39,6 +39,8 @@ export class APIRouter {
           const videoId = this.shortCreator.addToQueue(
             input.scenes,
             input.config,
+            input.title,
+            input.description,
           );
 
           res.status(201).json({
@@ -81,10 +83,8 @@ export class APIRouter {
           });
           return;
         }
-        const status = this.shortCreator.status(videoId);
-        res.status(200).json({
-          status,
-        });
+        const details = this.shortCreator.getVideoDetails(videoId);
+        res.status(200).json(details);
       },
     );
 
@@ -120,6 +120,13 @@ export class APIRouter {
           return;
         }
         this.shortCreator.deleteVideo(videoId);
+        const metadataPath = path.join(
+          this.config.videosDirPath,
+          `${videoId}.json`,
+        );
+        if (fs.existsSync(metadataPath)) {
+          fs.removeSync(metadataPath);
+        }
         res.status(200).json({
           success: true,
         });
