@@ -1,15 +1,14 @@
-import express from "express";
 import type {
   Request as ExpressRequest,
   Response as ExpressResponse,
 } from "express";
+import express from "express";
 import fs from "fs-extra";
-import path from "path";
-
-import { validateCreateShortInput } from "../validator";
-import { ShortCreator } from "../../short-creator/ShortCreator";
+import type { Config } from "../../config";
 import { logger } from "../../logger";
-import { Config } from "../../config";
+import type { ShortCreator } from "../../short-creator/ShortCreator";
+import { validateCreateShortInput } from "../validator";
+import path from "node:path";
 
 // todo abstract class
 export class APIRouter {
@@ -90,18 +89,18 @@ export class APIRouter {
 
     this.router.get(
       "/music-tags",
-      (req: ExpressRequest, res: ExpressResponse) => {
+      (_req: ExpressRequest, res: ExpressResponse) => {
         res.status(200).json(this.shortCreator.ListAvailableMusicTags());
       },
     );
 
-    this.router.get("/voices", (req: ExpressRequest, res: ExpressResponse) => {
+    this.router.get("/voices", (_req: ExpressRequest, res: ExpressResponse) => {
       res.status(200).json(this.shortCreator.ListAvailableVoices());
     });
 
     this.router.get(
       "/short-videos",
-      (req: ExpressRequest, res: ExpressResponse) => {
+      (_req: ExpressRequest, res: ExpressResponse) => {
         const videos = this.shortCreator.listAllVideos();
         res.status(200).json({
           videos,

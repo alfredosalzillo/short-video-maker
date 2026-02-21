@@ -1,15 +1,20 @@
-import React, { useState } from 'react';
-import { IconButton, Tooltip } from '@mui/material';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import CheckIcon from '@mui/icons-material/Check';
+import type React from "react";
+import { useState } from "react";
+import CheckIcon from "@mui/icons-material/Check";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { IconButton, Tooltip } from "@mui/material";
 
 interface CopyButtonProps {
   value: string;
-  size?: 'small' | 'medium' | 'large';
-  edge?: 'start' | 'end' | false;
+  size?: "small" | "medium" | "large";
+  edge?: "start" | "end" | false;
 }
 
-const CopyButton: React.FC<CopyButtonProps> = ({ value, size = 'small', edge = false }) => {
+const CopyButton: React.FC<CopyButtonProps> = ({
+  value,
+  size = "small",
+  edge = false,
+}) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -18,7 +23,7 @@ const CopyButton: React.FC<CopyButtonProps> = ({ value, size = 'small', edge = f
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error('Failed to copy text: ', err);
+      console.error("Failed to copy text: ", err);
     }
   };
 

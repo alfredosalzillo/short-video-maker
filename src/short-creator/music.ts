@@ -1,8 +1,7 @@
-import path from "path";
 import fs from "fs-extra";
-
-import { type Music, MusicForVideo, MusicMoodEnum } from "../types/shorts";
-import { Config } from "../config";
+import type { Config } from "../config";
+import { type Music, type MusicForVideo, MusicMoodEnum } from "../types/shorts";
+import path from "node:path";
 
 export class MusicManager {
   private static musicList: Music[] = [

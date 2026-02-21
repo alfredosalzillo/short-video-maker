@@ -1,33 +1,34 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  Paper,
-  Grid,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  CircularProgress,
-  Alert,
-  IconButton,
-  Divider,
-  InputAdornment,
-} from "@mui/material";
+import type React from "react";
+import { useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
-  SceneInput,
-  RenderConfig,
-  MusicMoodEnum,
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  FormControl,
+  Grid,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import {
   CaptionPositionEnum,
-  VoiceEnum,
-  OrientationEnum,
+  MusicMoodEnum,
   MusicVolumeEnum,
+  OrientationEnum,
+  type RenderConfig,
+  type SceneInput,
+  VoiceEnum,
 } from "../../types/shorts";
 
 interface SceneFormData {
@@ -54,8 +55,8 @@ const VideoCreator: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [voices, setVoices] = useState<VoiceEnum[]>([]);
-  const [musicTags, setMusicTags] = useState<MusicMoodEnum[]>([]);
+  const [_voices, setVoices] = useState<VoiceEnum[]>([]);
+  const [_musicTags, setMusicTags] = useState<MusicMoodEnum[]>([]);
   const [loadingOptions, setLoadingOptions] = useState(true);
 
   useEffect(() => {
@@ -103,7 +104,10 @@ const VideoCreator: React.FC = () => {
     setScenes(newScenes);
   };
 
-  const handleConfigChange = (field: keyof RenderConfig, value: any) => {
+  const handleConfigChange = (
+    field: keyof RenderConfig,
+    value: RenderConfig[keyof RenderConfig],
+  ) => {
     setConfig({ ...config, [field]: value });
   };
 
@@ -204,7 +208,8 @@ const VideoCreator: React.FC = () => {
         </Typography>
 
         {scenes.map((scene, index) => (
-          <Paper key={index} sx={{ p: 3, mb: 3 }}>
+          // biome-ignore lint/suspicious/noArrayIndexKey: order of scenes is preserved
+          <Paper key={`scene-${index}`} sx={{ p: 3, mb: 3 }}>
             <Box
               display="flex"
               justifyContent="space-between"
@@ -279,7 +284,10 @@ const VideoCreator: React.FC = () => {
                 label="End Screen Padding (ms)"
                 value={config.paddingBack}
                 onChange={(e) =>
-                  handleConfigChange("paddingBack", parseInt(e.target.value))
+                  handleConfigChange(
+                    "paddingBack",
+                    parseInt(e.target.value, 10),
+                  )
                 }
                 slotProps={{
                   input: {

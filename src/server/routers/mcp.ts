@@ -1,10 +1,9 @@
-import express from "express";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
+import express from "express";
 import z from "zod";
-
-import { ShortCreator } from "../../short-creator/ShortCreator";
 import { logger } from "../../logger";
+import type { ShortCreator } from "../../short-creator/ShortCreator";
 import { renderConfig, sceneInput } from "../../types/shorts";
 
 export class MCPRouter {
@@ -76,7 +75,7 @@ export class MCPRouter {
   }
 
   private setupRoutes() {
-    this.router.get("/sse", async (req, res) => {
+    this.router.get("/sse", async (_req, res) => {
       logger.info("SSE GET request received");
 
       const transport = new SSEServerTransport("/mcp/messages", res);

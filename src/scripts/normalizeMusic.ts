@@ -1,11 +1,12 @@
 import ffmpeg from "fluent-ffmpeg";
-import path from "path";
-import("@ffmpeg-installer/ffmpeg");
-import fs from "fs-extra";
+import path from "node:path";
 
+import("@ffmpeg-installer/ffmpeg");
+
+import fs from "fs-extra";
+import { Config } from "../config";
 import { logger } from "../logger";
 import { MusicManager } from "../short-creator/music";
-import { Config } from "../config";
 
 async function normalize(inputPath: string, outputPath: string) {
   return new Promise((resolve, reject) => {

@@ -1,6 +1,6 @@
-import { createShortInput, CreateShortInput } from "../types/shorts";
+import type { ZodError } from "zod";
 import { logger } from "../logger";
-import { ZodError } from "zod";
+import { type CreateShortInput, createShortInput } from "../types/shorts";
 
 export interface ValidationErrorResult {
   message: string;

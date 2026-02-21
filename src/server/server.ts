@@ -1,15 +1,15 @@
-import http from "http";
-import express from "express";
 import type {
   Request as ExpressRequest,
   Response as ExpressResponse,
 } from "express";
-import path from "path";
-import { ShortCreator } from "../short-creator/ShortCreator";
-import { APIRouter } from "./routers/rest";
-import { MCPRouter } from "./routers/mcp";
+import express from "express";
+import type { Config } from "../config";
 import { logger } from "../logger";
-import { Config } from "../config";
+import type { ShortCreator } from "../short-creator/ShortCreator";
+import { MCPRouter } from "./routers/mcp";
+import { APIRouter } from "./routers/rest";
+import type http from "node:http";
+import path from "node:path";
 
 export class Server {
   private app: express.Application;
@@ -20,7 +20,7 @@ export class Server {
     this.app = express();
 
     // add healthcheck endpoint
-    this.app.get("/health", (req: ExpressRequest, res: ExpressResponse) => {
+    this.app.get("/health", (_req: ExpressRequest, res: ExpressResponse) => {
       res.status(200).json({ status: "ok" });
     });
 
@@ -37,7 +37,7 @@ export class Server {
     );
 
     // Serve the React app for all other routes (must be last)
-    this.app.get("{*splat}", (req: ExpressRequest, res: ExpressResponse) => {
+    this.app.get("{*splat}", (_req: ExpressRequest, res: ExpressResponse) => {
       res.sendFile(path.join(__dirname, "../../dist/ui/index.html"));
     });
   }

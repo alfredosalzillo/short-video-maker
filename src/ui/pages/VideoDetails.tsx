@@ -1,20 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import type React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import DownloadIcon from "@mui/icons-material/Download";
 import {
+  Alert,
   Box,
-  Typography,
-  Paper,
   Button,
   CircularProgress,
-  Alert,
   Grid,
-  TextField
-} from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import DownloadIcon from '@mui/icons-material/Download';
-import CopyButton from '../components/CopyButton';
-import { VideoMetadata } from '../../types/shorts';
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
+import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
+import type { VideoMetadata } from "../../types/shorts";
+import CopyButton from "../components/CopyButton";
 
 const VideoDetails: React.FC = () => {
   const { videoId } = useParams<{ videoId: string }>();
@@ -25,7 +26,7 @@ const VideoDetails: React.FC = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const isMounted = useRef(true);
 
-  const checkVideoStatus = async () => {
+  const checkVideoStatus = useCallback(async () => {
     try {
       const response = await axios.get(`/api/short-video/${videoId}/status`);
       const videoData = response.data;
@@ -34,7 +35,7 @@ const VideoDetails: React.FC = () => {
         setVideo(videoData);
         console.log("videoStatus", videoData.status);
 
-        if (videoData.status !== 'processing') {
+        if (videoData.status !== "processing") {
           console.log("video is not processing");
           console.log("interval", intervalRef.current);
 
@@ -49,9 +50,9 @@ const VideoDetails: React.FC = () => {
       }
     } catch (error) {
       if (isMounted.current) {
-        setError('Failed to fetch video details');
+        setError("Failed to fetch video details");
         setLoading(false);
-        console.error('Error fetching video status:', error);
+        console.error("Error fetching video status:", error);
 
         if (intervalRef.current) {
           clearInterval(intervalRef.current);
@@ -59,7 +60,7 @@ const VideoDetails: React.FC = () => {
         }
       }
     }
-  };
+  }, [videoId]);
 
   useEffect(() => {
     checkVideoStatus();
@@ -75,16 +76,21 @@ const VideoDetails: React.FC = () => {
         intervalRef.current = null;
       }
     };
-  }, [videoId]);
+  }, [checkVideoStatus]);
 
   const handleBack = () => {
-    navigate('/');
+    navigate("/");
   };
 
   const renderContent = () => {
     if (loading) {
       return (
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="30vh">
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="30vh"
+        >
           <CircularProgress />
         </Box>
       );
@@ -94,7 +100,7 @@ const VideoDetails: React.FC = () => {
       return <Alert severity="error">{error}</Alert>;
     }
 
-    if (video?.status === 'processing') {
+    if (video?.status === "processing") {
       return (
         <Box textAlign="center" py={4}>
           <CircularProgress size={60} sx={{ mb: 2 }} />
@@ -106,7 +112,7 @@ const VideoDetails: React.FC = () => {
       );
     }
 
-    if (video?.status === 'ready') {
+    if (video?.status === "ready") {
       return (
         <Box>
           <Box mb={3} textAlign="center">
@@ -115,24 +121,28 @@ const VideoDetails: React.FC = () => {
             </Typography>
           </Box>
 
-          <Box sx={{
-            position: 'relative',
-            paddingTop: '56.25%',
-            mb: 3,
-            backgroundColor: '#000'
-          }}>
+          <Box
+            sx={{
+              position: "relative",
+              paddingTop: "56.25%",
+              mb: 3,
+              backgroundColor: "#000",
+            }}
+          >
             <video
               controls
               autoPlay
               style={{
-                position: 'absolute',
+                position: "absolute",
                 top: 0,
                 left: 0,
-                width: '100%',
-                height: '100%',
+                width: "100%",
+                height: "100%",
               }}
               src={`/api/short-video/${videoId}`}
-            />
+            >
+              <track kind="captions" />
+            </video>
           </Box>
 
           <Box textAlign="center">
@@ -143,7 +153,7 @@ const VideoDetails: React.FC = () => {
               variant="contained"
               color="primary"
               startIcon={<DownloadIcon />}
-              sx={{ textDecoration: 'none' }}
+              sx={{ textDecoration: "none" }}
             >
               Download Video
             </Button>
@@ -152,7 +162,7 @@ const VideoDetails: React.FC = () => {
       );
     }
 
-    if (video?.status === 'failed') {
+    if (video?.status === "failed") {
       return (
         <Alert severity="error" sx={{ mb: 3 }}>
           Video processing failed. Please try again with different settings.
@@ -168,7 +178,7 @@ const VideoDetails: React.FC = () => {
   };
 
   const capitalizeFirstLetter = (str: string) => {
-    if (!str || typeof str !== 'string') return 'Unknown';
+    if (!str || typeof str !== "string") return "Unknown";
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 

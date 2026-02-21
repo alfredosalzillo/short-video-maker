@@ -1,18 +1,17 @@
+import { loadFont } from "@remotion/google-fonts/BarlowCondensed";
 import {
   AbsoluteFill,
+  Audio,
+  OffthreadVideo,
   Sequence,
   useCurrentFrame,
   useVideoConfig,
-  Audio,
-  OffthreadVideo,
 } from "remotion";
-import { z } from "zod";
-import { loadFont } from "@remotion/google-fonts/BarlowCondensed";
-
+import type { z } from "zod";
 import {
   calculateVolume,
   createCaptionPages,
-  shortVideoSchema,
+  type shortVideoSchema,
 } from "../utils";
 
 const { fontFamily } = loadFont(); // "Barlow Condensed"
@@ -86,14 +85,14 @@ export const LandscapeVideo: React.FC<z.infer<typeof shortVideoSchema>> = ({
           <Sequence
             from={startFrame}
             durationInFrames={durationInFrames}
-            key={`scene-${i}`}
+            key={`scene-${scene.audio.url}-${i}`}
           >
             <OffthreadVideo src={video} muted />
             <Audio src={audio.url} />
             {pages.map((page, j) => {
               return (
                 <Sequence
-                  key={`scene-${i}-page-${j}`}
+                  key={`scene-${scene.audio.url}-${i}-page-${page.startMs}-${j}`}
                   from={Math.round((page.startMs / 1000) * fps)}
                   durationInFrames={Math.round(
                     ((page.endMs - page.startMs) / 1000) * fps,
@@ -123,7 +122,7 @@ export const LandscapeVideo: React.FC<z.infer<typeof shortVideoSchema>> = ({
                             // uppercase
                             textTransform: "uppercase",
                           }}
-                          key={`scene-${i}-page-${j}-line-${k}`}
+                          key={`scene-${scene.audio.url}-${i}-page-${page.startMs}-${j}-line-${k}`}
                         >
                           {line.texts.map((text, l) => {
                             const active =
@@ -137,7 +136,7 @@ export const LandscapeVideo: React.FC<z.infer<typeof shortVideoSchema>> = ({
                                     fontWeight: "bold",
                                     ...(active ? activeStyle : {}),
                                   }}
-                                  key={`scene-${i}-page-${j}-line-${k}-text-${l}`}
+                                  key={`scene-${scene.audio.url}-${i}-page-${page.startMs}-${j}-line-${k}-text-${text.text}-${l}`}
                                 >
                                   {text.text}
                                 </span>

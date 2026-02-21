@@ -1,6 +1,6 @@
 import ffmpeg from "fluent-ffmpeg";
-import { Readable } from "node:stream";
 import { logger } from "../../logger";
+import { Readable } from "node:stream";
 
 export class FFMpeg {
   static async init(): Promise<FFMpeg> {

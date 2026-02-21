@@ -1,10 +1,10 @@
 import { z } from "zod";
 import {
   type Caption,
-  type CaptionPage,
   type CaptionLine,
-  type OrientationEnum,
+  type CaptionPage,
   MusicVolumeEnum,
+  type OrientationEnum,
 } from "../types/shorts";
 import { AvailableComponentsEnum, type OrientationConfig } from "./types";
 

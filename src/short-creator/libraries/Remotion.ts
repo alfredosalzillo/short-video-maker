@@ -1,14 +1,18 @@
-import z from "zod";
 import { bundle } from "@remotion/bundler";
-import { renderMedia, selectComposition } from "@remotion/renderer";
-import path from "path";
-import { ensureBrowser } from "@remotion/renderer";
-
-import { Config } from "../../config";
-import { shortVideoSchema } from "../../components/utils";
+import {
+  ensureBrowser,
+  renderMedia,
+  selectComposition,
+} from "@remotion/renderer";
+import type z from "zod";
+import {
+  getOrientationConfig,
+  type shortVideoSchema,
+} from "../../components/utils";
+import type { Config } from "../../config";
 import { logger } from "../../logger";
-import { OrientationEnum } from "../../types/shorts";
-import { getOrientationConfig } from "../../components/utils";
+import type { OrientationEnum } from "../../types/shorts";
+import path from "node:path";
 
 export class Remotion {
   constructor(

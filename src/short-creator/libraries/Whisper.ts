@@ -3,11 +3,10 @@ import {
   installWhisperCpp,
   transcribe,
 } from "@remotion/install-whisper-cpp";
-import path from "path";
-
-import { Config } from "../../config";
-import type { Caption } from "../../types/shorts";
+import type { Config } from "../../config";
 import { logger } from "../../logger";
+import type { Caption } from "../../types/shorts";
+import path from "node:path";
 
 export const ErrorWhisper = new Error("There was an error with WhisperCpp");
 

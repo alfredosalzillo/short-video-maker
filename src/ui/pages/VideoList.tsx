@@ -1,26 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from "axios";
+import type React from "react";
+import { useCallback, useEffect, useState } from "react";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import {
+  Alert,
   Box,
-  Typography,
-  Paper,
   Button,
   CircularProgress,
-  Alert,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
-  IconButton,
   Divider,
+  IconButton,
+  List,
   ListItemButton,
+  ListItemSecondaryAction,
+  ListItemText,
+  Paper,
+  Typography,
 } from "@mui/material";
-import AddIcon from '@mui/icons-material/Add';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import DeleteIcon from '@mui/icons-material/Delete';
-
-import { VideoMetadata } from '../../types/shorts';
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import type { VideoMetadata } from "../../types/shorts";
 
 const VideoList: React.FC = () => {
   const navigate = useNavigate();
@@ -28,50 +27,58 @@ const VideoList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchVideos = async () => {
+  const fetchVideos = useCallback(async () => {
     try {
-      const response = await axios.get('/api/short-videos');
+      const response = await axios.get("/api/short-videos");
       setVideos(response.data.videos || []);
       setLoading(false);
     } catch (err) {
-      setError('Failed to fetch videos');
+      setError("Failed to fetch videos");
       setLoading(false);
-      console.error('Error fetching videos:', err);
+      console.error("Error fetching videos:", err);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchVideos();
-  }, []);
+  }, [fetchVideos]);
 
   const handleCreateNew = () => {
-    navigate('/create');
+    navigate("/create");
   };
 
   const handleVideoClick = (id: string) => {
     navigate(`/video/${id}`);
   };
 
-  const handleDeleteVideo = async (id: string, event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleDeleteVideo = async (
+    id: string,
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     event.stopPropagation();
 
     try {
       await axios.delete(`/api/short-video/${id}`);
       fetchVideos();
     } catch (err) {
-      setError('Failed to delete video');
-      console.error('Error deleting video:', err);
+      setError("Failed to delete video");
+      console.error("Error deleting video:", err);
     }
   };
 
   const capitalizeFirstLetter = (str: string) => {
-    if (!str || typeof str !== 'string') return 'Unknown';
+    if (!str || typeof str !== "string") return "Unknown";
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="80vh">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="80vh"
+      >
         <CircularProgress />
       </Box>
     );
@@ -79,7 +86,12 @@ const VideoList: React.FC = () => {
 
   return (
     <Box maxWidth="md" mx="auto" py={4}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={4}
+      >
         <Typography variant="h4" component="h1">
           Your Videos
         </Typography>
@@ -94,11 +106,13 @@ const VideoList: React.FC = () => {
       </Box>
 
       {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {error}
+        </Alert>
       )}
 
       {videos.length === 0 ? (
-        <Paper sx={{ p: 4, textAlign: 'center' }}>
+        <Paper sx={{ p: 4, textAlign: "center" }}>
           <Typography variant="body1" color="text.secondary" gutterBottom>
             You haven't created any videos yet.
           </Typography>
@@ -117,7 +131,9 @@ const VideoList: React.FC = () => {
             {videos.map((video, index) => {
               const videoId = video?.id || "";
               const videoStatus = video?.status || "unknown";
-              const videoTitle = video?.title + ` (Video ${videoId.substring(0, 8)}...)` || `Video ${videoId.substring(0, 8)}...`;
+              const videoTitle =
+                `${video?.title} (Video ${videoId.substring(0, 8)}...)` ||
+                `Video ${videoId.substring(0, 8)}...`;
               const videoDescription = video?.description;
 
               return (

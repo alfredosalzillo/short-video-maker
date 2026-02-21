@@ -1,29 +1,28 @@
-import { OrientationEnum } from "./../types/shorts";
+import cuid from "cuid";
 /* eslint-disable @remotion/deterministic-randomness */
 import fs from "fs-extra";
-import cuid from "cuid";
-import path from "path";
-import https from "https";
-import http from "http";
-
-import { Kokoro } from "./libraries/Kokoro";
-import { Remotion } from "./libraries/Remotion";
-import { Whisper } from "./libraries/Whisper";
-import { FFMpeg } from "./libraries/FFmpeg";
-import { PexelsAPI } from "./libraries/Pexels";
-import { Config } from "../config";
+import type { Config } from "../config";
 import { logger } from "../logger";
-import { MusicManager } from "./music";
+import { OrientationEnum } from "./../types/shorts";
 import type {
-  SceneInput,
-  RenderConfig,
-  Scene,
-  VideoStatus,
-  VideoMetadata,
+  MusicForVideo,
   MusicMoodEnum,
   MusicTag,
-  MusicForVideo,
+  RenderConfig,
+  Scene,
+  SceneInput,
+  VideoMetadata,
+  VideoStatus,
 } from "../types/shorts";
+import type { FFMpeg } from "./libraries/FFmpeg";
+import type { Kokoro } from "./libraries/Kokoro";
+import type { PexelsAPI } from "./libraries/Pexels";
+import type { Remotion } from "./libraries/Remotion";
+import type { Whisper } from "./libraries/Whisper";
+import type { MusicManager } from "./music";
+import type http from "node:http";
+import https from "node:https";
+import path from "node:path";
 
 export class ShortCreator {
   private queue: {
@@ -132,7 +131,10 @@ export class ShortCreator {
     title?: string,
     description?: string,
   ): Promise<void> {
-    const metadataPath = path.join(this.config.videosDirPath, `${videoId}.json`);
+    const metadataPath = path.join(
+      this.config.videosDirPath,
+      `${videoId}.json`,
+    );
     try {
       await fs.writeJson(metadataPath, { title, description });
       logger.debug({ videoId, metadataPath }, "Video metadata saved");
@@ -297,7 +299,10 @@ export class ShortCreator {
     return fs.readFileSync(videoPath);
   }
 
-  private findMusic(videoDuration: number, tag?: MusicMoodEnum): MusicForVideo {
+  private findMusic(
+    _videoDuration: number,
+    tag?: MusicMoodEnum,
+  ): MusicForVideo {
     const musicFiles = this.musicManager.musicList().filter((music) => {
       if (tag) {
         return music.mood === tag;

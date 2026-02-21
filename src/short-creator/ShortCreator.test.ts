@@ -1,16 +1,15 @@
 process.env.LOG_LEVEL = "debug";
 
-import { test, expect, vi } from "vitest";
 import fs from "fs-extra";
-
-import { ShortCreator } from "./ShortCreator";
+import { expect, test, vi } from "vitest";
+import { Config } from "../config";
+import { FFMpeg } from "./libraries/FFmpeg";
 import { Kokoro } from "./libraries/Kokoro";
+import { PexelsAPI } from "./libraries/Pexels";
 import { Remotion } from "./libraries/Remotion";
 import { Whisper } from "./libraries/Whisper";
-import { FFMpeg } from "./libraries/FFmpeg";
-import { PexelsAPI } from "./libraries/Pexels";
-import { Config } from "../config";
 import { MusicManager } from "./music";
+import { ShortCreator } from "./ShortCreator";
 
 // mock fs-extra
 vi.mock("fs-extra", async () => {
@@ -34,7 +33,7 @@ vi.mock("fs-extra", async () => {
     ensureDirSync: vi.fn((path) => {
       try {
         memfs.mkdirSync(path, { recursive: true });
-      } catch (error) {}
+      } catch (_error) {}
     }),
     removeSync: vi.fn((path) => {
       try {
@@ -45,7 +44,7 @@ vi.mock("fs-extra", async () => {
         } else {
           memfs.unlinkSync(path);
         }
-      } catch (error) {}
+      } catch (_error) {}
     }),
     createWriteStream: vi.fn(() => ({
       on: vi.fn(),
@@ -68,6 +67,7 @@ vi.mock("fluent-ffmpeg", () => {
   const mockSave = vi.fn().mockReturnThis();
   const mockPipe = vi.fn().mockReturnThis();
 
+  // biome-ignore lint/suspicious/noExplicitAny: mocking library
   const ffmpegMock: any = vi.fn(() => ({
     input: vi.fn().mockReturnThis(),
     audioCodec: vi.fn().mockReturnThis(),
@@ -90,32 +90,33 @@ vi.mock("kokoro-js", () => {
   return {
     KokoroTTS: {
       from_pretrained: vi.fn().mockResolvedValue({
-        stream: vi.fn().mockReturnValue((async function* () {
-          yield {
-            audio: {
-              toWav: vi.fn().mockReturnValue(Buffer.alloc(44 + 8)),
-              audio: new Float32Array(8),
-              sampling_rate: 44100,
-            }
-          };
-        })()),
+        stream: vi.fn().mockReturnValue(
+          (async function* () {
+            yield {
+              audio: {
+                toWav: vi.fn().mockReturnValue(Buffer.alloc(44 + 8)),
+                audio: new Float32Array(8),
+                sampling_rate: 44100,
+              },
+            };
+          })(),
+        ),
       }),
     },
-    TextSplitterStream: vi.fn().mockImplementation(function() {
-      return {
-        push: vi.fn(),
-        close: vi.fn(),
-      };
-    }),
+    TextSplitterStream: vi.fn().mockImplementation(() => ({
+      push: vi.fn(),
+      close: vi.fn(),
+    })),
   };
 });
 
 // mock https
 vi.mock("https", () => {
-  const { EventEmitter } = require("events");
+  const { EventEmitter } = require("node:events");
   return {
     default: {
-      get: vi.fn((url, callback) => {
+      get: vi.fn((_url, callback) => {
+        // biome-ignore lint/suspicious/noExplicitAny: mocking library
         const response = new EventEmitter() as any;
         response.statusCode = 200;
         response.pipe = vi.fn((dest) => {
@@ -248,11 +249,11 @@ test("test me", async () => {
   // Wait for the next tick to allow processQueue's finally block to run
   await new Promise((resolve) => setTimeout(resolve, 100));
   // force shifting for the test as something is blocking the queue in the test environment
-  if (shortCreator['queue'].length > 0) {
-    shortCreator['queue'].shift();
+  if (shortCreator.queue.length > 0) {
+    shortCreator.queue.shift();
   }
   // verify it's removed from queue
-  expect(shortCreator['queue'].length).toBe(0);
+  expect(shortCreator.queue.length).toBe(0);
   videos = shortCreator.listAllVideos();
   expect(videos.find((v) => v.id === videoId)?.status).toBe("ready");
 

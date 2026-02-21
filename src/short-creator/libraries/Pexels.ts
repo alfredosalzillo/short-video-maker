@@ -75,39 +75,37 @@ export class PexelsAPI {
       throw new Error("No videos found");
     }
 
-    // find all the videos that fits the criteria, then select one randomly
-    const filteredVideos = videos
-      .map((video) => {
-        if (excludeIds.includes(video.id)) {
-          return;
-        }
-        if (!video.video_files.length) {
-          return;
-        }
+    const filteredVideos: Video[] = [];
+    for (const video of videos) {
+      if (excludeIds.includes(video.id)) {
+        continue;
+      }
+      if (!video.video_files.length) {
+        continue;
+      }
 
-        // calculate the real duration of the video by converting the FPS to 25
-        const fps = video.video_files[0].fps;
-        const duration =
-          fps < 25 ? video.duration * (fps / 25) : video.duration;
+      // calculate the real duration of the video by converting the FPS to 25
+      const fps = video.video_files[0].fps;
+      const duration = fps < 25 ? video.duration * (fps / 25) : video.duration;
 
-        if (duration >= minDurationSeconds + durationBufferSeconds) {
-          for (const file of video.video_files) {
-            if (
-              file.quality === "hd" &&
-              file.width === requiredVideoWidth &&
-              file.height === requiredVideoHeight
-            ) {
-              return {
-                id: video.id,
-                url: file.link,
-                width: file.width,
-                height: file.height,
-              };
-            }
+      if (duration >= minDurationSeconds + durationBufferSeconds) {
+        for (const file of video.video_files) {
+          if (
+            file.quality === "hd" &&
+            file.width === requiredVideoWidth &&
+            file.height === requiredVideoHeight
+          ) {
+            filteredVideos.push({
+              id: video.id,
+              url: file.link,
+              width: file.width,
+              height: file.height,
+            });
+            break;
           }
         }
-      })
-      .filter(Boolean);
+      }
+    }
     if (!filteredVideos.length) {
       logger.error({ searchTerm }, "No videos found in Pexels API");
       throw new Error("No videos found");

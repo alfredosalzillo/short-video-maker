@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import path from "path";
-import fs from "fs-extra";
 
-import { Kokoro } from "./short-creator/libraries/Kokoro";
-import { Remotion } from "./short-creator/libraries/Remotion";
-import { Whisper } from "./short-creator/libraries/Whisper";
-import { FFMpeg } from "./short-creator/libraries/FFmpeg";
-import { PexelsAPI } from "./short-creator/libraries/Pexels";
+import fs from "fs-extra";
 import { Config } from "./config";
-import { ShortCreator } from "./short-creator/ShortCreator";
 import { logger } from "./logger";
 import { Server } from "./server/server";
+import { FFMpeg } from "./short-creator/libraries/FFmpeg";
+import { Kokoro } from "./short-creator/libraries/Kokoro";
+import { PexelsAPI } from "./short-creator/libraries/Pexels";
+import { Remotion } from "./short-creator/libraries/Remotion";
+import { Whisper } from "./short-creator/libraries/Whisper";
 import { MusicManager } from "./short-creator/music";
+import { ShortCreator } from "./short-creator/ShortCreator";
+import path from "node:path";
 
 async function main() {
   const config = new Config();
@@ -83,7 +83,7 @@ async function main() {
 
   logger.debug("initializing the server");
   const server = new Server(config, shortCreator);
-  const app = server.start();
+  const _app = server.start();
 
   // todo add shutdown handler
 }

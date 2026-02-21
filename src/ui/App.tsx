@@ -1,9 +1,9 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import VideoList from './pages/VideoList';
-import VideoCreator from './pages/VideoCreator';
-import VideoDetails from './pages/VideoDetails';
-import Layout from './components/Layout';
+import type React from "react";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import Layout from "./components/Layout";
+import VideoCreator from "./pages/VideoCreator";
+import VideoDetails from "./pages/VideoDetails";
+import VideoList from "./pages/VideoList";
 
 const App: React.FC = () => {
   return (
@@ -19,4 +19,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App; 
+export default App;

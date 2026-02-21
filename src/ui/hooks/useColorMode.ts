@@ -1,28 +1,28 @@
-import { useState, useEffect, useMemo } from 'react';
-import { PaletteMode, useMediaQuery, createTheme } from '@mui/material';
+import { useEffect, useMemo, useState } from "react";
+import { createTheme, type PaletteMode, useMediaQuery } from "@mui/material";
 
 export const useColorMode = () => {
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
   const [mode, setMode] = useState<PaletteMode>(() => {
-    const savedMode = localStorage.getItem('themeMode') as PaletteMode;
-    if (savedMode && ['light', 'dark'].includes(savedMode)) {
+    const savedMode = localStorage.getItem("themeMode") as PaletteMode;
+    if (savedMode && ["light", "dark"].includes(savedMode)) {
       return savedMode;
     }
-    return prefersDarkMode ? 'dark' : 'light';
+    return prefersDarkMode ? "dark" : "light";
   });
 
   useEffect(() => {
-    const savedMode = localStorage.getItem('themeMode') as PaletteMode;
+    const savedMode = localStorage.getItem("themeMode") as PaletteMode;
     if (!savedMode) {
-      setMode(prefersDarkMode ? 'dark' : 'light');
+      setMode(prefersDarkMode ? "dark" : "light");
     }
   }, [prefersDarkMode]);
 
   const toggleColorMode = () => {
     setMode((prevMode) => {
-      const newMode = prevMode === 'light' ? 'dark' : 'light';
-      localStorage.setItem('themeMode', newMode);
+      const newMode = prevMode === "light" ? "dark" : "light";
+      localStorage.setItem("themeMode", newMode);
       return newMode;
     });
   };
@@ -33,10 +33,10 @@ export const useColorMode = () => {
         palette: {
           mode,
           primary: {
-            main: '#1976d2',
+            main: "#1976d2",
           },
           secondary: {
-            main: '#f50057',
+            main: "#f50057",
           },
         },
         typography: {

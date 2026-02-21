@@ -1,9 +1,9 @@
-import path from "path";
+import path from "node:path";
 import "dotenv/config";
-import os from "os";
 import fs from "fs-extra";
 import pino from "pino";
-import { kokoroModelPrecision, whisperModels } from "./types/shorts";
+import type { kokoroModelPrecision, whisperModels } from "./types/shorts";
+import os from "node:os";
 
 const defaultLogLevel: pino.Level = "info";
 const defaultPort = 3123;
@@ -77,7 +77,7 @@ export class Config {
     this.pexelsApiKey = process.env.PEXELS_API_KEY as string;
     this.logLevel = (process.env.LOG_LEVEL || defaultLogLevel) as pino.Level;
     this.whisperVerbose = process.env.WHISPER_VERBOSE === "true";
-    this.port = process.env.PORT ? parseInt(process.env.PORT) : defaultPort;
+    this.port = process.env.PORT ? parseInt(process.env.PORT, 10) : defaultPort;
     this.runningInDocker = process.env.DOCKER === "true";
     this.devMode = process.env.DEV === "true";
 
@@ -90,12 +90,13 @@ export class Config {
     }
 
     this.concurrency = process.env.CONCURRENCY
-      ? parseInt(process.env.CONCURRENCY)
+      ? parseInt(process.env.CONCURRENCY, 10)
       : undefined;
 
     if (process.env.VIDEO_CACHE_SIZE_IN_BYTES) {
       this.videoCacheSizeInBytes = parseInt(
         process.env.VIDEO_CACHE_SIZE_IN_BYTES,
+        10,
       );
     }
   }

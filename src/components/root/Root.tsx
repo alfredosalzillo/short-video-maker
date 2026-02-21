@@ -1,10 +1,10 @@
-import { CalculateMetadataFunction, Composition } from "remotion";
-import { shortVideoSchema } from "../utils";
-import { PortraitVideo } from "../videos/PortraitVideo";
-import { LandscapeVideo } from "../videos/LandscapeVideo";
-import { TestVideo } from "../videos/Test";
-import z from "zod";
+import { type CalculateMetadataFunction, Composition } from "remotion";
+import type z from "zod";
 import { AvailableComponentsEnum } from "../types";
+import type { shortVideoSchema } from "../utils";
+import { LandscapeVideo } from "../videos/LandscapeVideo";
+import { PortraitVideo } from "../videos/PortraitVideo";
+import { TestVideo } from "../videos/Test";
 
 const FPS = 25;
 

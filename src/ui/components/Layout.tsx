@@ -1,21 +1,21 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import type React from "react";
+import AddIcon from "@mui/icons-material/Add";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import VideoIcon from "@mui/icons-material/VideoLibrary";
 import {
   AppBar,
   Box,
+  Button,
   Container,
   CssBaseline,
+  IconButton,
+  ThemeProvider,
   Toolbar,
   Typography,
-  Button,
-  ThemeProvider,
-  IconButton
-} from '@mui/material';
-import VideoIcon from '@mui/icons-material/VideoLibrary';
-import AddIcon from '@mui/icons-material/Add';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import LightModeIcon from '@mui/icons-material/LightMode';
-import { useColorMode } from '../hooks/useColorMode';
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useColorMode } from "../hooks/useColorMode";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -28,28 +28,30 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Box
+        sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+      >
         <AppBar position="static">
           <Toolbar>
             <VideoIcon sx={{ mr: 2 }} />
             <Typography
               variant="h6"
               component="div"
-              sx={{ flexGrow: 1, cursor: 'pointer' }}
-              onClick={() => navigate('/')}
+              sx={{ flexGrow: 1, cursor: "pointer" }}
+              onClick={() => navigate("/")}
             >
               Short Video Maker
             </Typography>
             <Button
               color="inherit"
               startIcon={<AddIcon />}
-              onClick={() => navigate('/create')}
+              onClick={() => navigate("/create")}
               sx={{ mr: 2 }}
             >
               Create Video
             </Button>
             <IconButton onClick={toggleColorMode} color="inherit">
-              {mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+              {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
             </IconButton>
           </Toolbar>
         </AppBar>
@@ -60,12 +62,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           component="footer"
           sx={{
             py: 3,
-            mt: 'auto',
+            mt: "auto",
             backgroundColor: (theme) =>
-              theme.palette.mode === 'light'
+              theme.palette.mode === "light"
                 ? theme.palette.grey[200]
                 : theme.palette.grey[900],
-            textAlign: 'center'
+            textAlign: "center",
           }}
         >
           <Typography variant="body2" color="text.secondary">
