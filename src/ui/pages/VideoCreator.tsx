@@ -18,6 +18,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useDialogs } from "@toolpad/core";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -30,6 +31,7 @@ import {
   type SceneInput,
   VoiceEnum,
 } from "../../types/shorts";
+import AskAiDialog from "../components/AskAiDialog";
 
 interface SceneFormData {
   text: string;
@@ -38,6 +40,7 @@ interface SceneFormData {
 
 const VideoCreator: React.FC = () => {
   const navigate = useNavigate();
+  const dialogs = useDialogs();
   const [scenes, setScenes] = useState<SceneFormData[]>([
     { text: "", searchTerms: "" },
   ]);
@@ -97,6 +100,15 @@ const VideoCreator: React.FC = () => {
     setConfig({ ...config, [field]: value });
   };
 
+  const handleAskAi = async () => {
+    const result = await dialogs.open(AskAiDialog);
+    if (result) {
+      setTitle(result.title);
+      setDescription(result.description);
+      setScenes(result.scenes);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -126,6 +138,22 @@ const VideoCreator: React.FC = () => {
           {typeof error === "string" ? error : "An error occurred"}
         </Alert>
       )}
+
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={3}
+      >
+        <Box />
+        <Button
+          variant="outlined"
+          onClick={handleAskAi}
+          startIcon={<AddIcon />}
+        >
+          Ask AI
+        </Button>
+      </Box>
 
       <form onSubmit={handleSubmit}>
         <Paper sx={{ p: 3, mb: 3 }}>

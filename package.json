@@ -48,6 +48,8 @@
   "author": "David Gyori",
   "license": "MIT",
   "dependencies": {
+    "@ai-sdk/google": "^3.0.30",
+    "@ai-sdk/openai": "^3.0.30",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
@@ -63,6 +65,7 @@
     "@toolpad/core": "^0.16.0",
     "@types/react-dom": "^19.2.3",
     "@types/react-router-dom": "^5.3.3",
+    "ai": "^6.0.97",
     "axios": "^1.13.5",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
