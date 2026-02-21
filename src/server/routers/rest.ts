@@ -76,7 +76,7 @@ export class APIRouter {
     this.router.get(
       "/short-video/:videoId/status",
       async (req: ExpressRequest, res: ExpressResponse) => {
-        const { videoId } = req.params;
+        const videoId = req.params.videoId as string;
         if (!videoId) {
           res.status(400).json({
             error: "videoId is required",
@@ -112,7 +112,7 @@ export class APIRouter {
     this.router.delete(
       "/short-video/:videoId",
       (req: ExpressRequest, res: ExpressResponse) => {
-        const { videoId } = req.params;
+        const videoId = req.params.videoId as string;
         if (!videoId) {
           res.status(400).json({
             error: "videoId is required",
@@ -136,7 +136,7 @@ export class APIRouter {
     this.router.get(
       "/tmp/:tmpFile",
       (req: ExpressRequest, res: ExpressResponse) => {
-        const { tmpFile } = req.params;
+        const tmpFile = req.params.tmpFile as string;
         if (!tmpFile) {
           res.status(400).json({
             error: "tmpFile is required",
@@ -176,7 +176,7 @@ export class APIRouter {
     this.router.get(
       "/music/:fileName",
       (req: ExpressRequest, res: ExpressResponse) => {
-        const { fileName } = req.params;
+        const fileName = req.params.fileName as string;
         if (!fileName) {
           res.status(400).json({
             error: "fileName is required",
@@ -206,7 +206,7 @@ export class APIRouter {
       "/short-video/:videoId",
       (req: ExpressRequest, res: ExpressResponse) => {
         try {
-          const { videoId } = req.params;
+          const videoId = req.params.videoId as string;
           if (!videoId) {
             res.status(400).json({
               error: "videoId is required",

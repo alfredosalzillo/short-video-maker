@@ -121,7 +121,9 @@ export class ShortCreator {
       logger.error(error, "Error creating video");
     } finally {
       this.queue.shift();
-      this.processQueue();
+      if (this.queue.length > 0) {
+        this.processQueue();
+      }
     }
   }
 

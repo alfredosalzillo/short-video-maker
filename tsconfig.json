@@ -17,6 +17,7 @@
     "node_modules",
     "dist",
     "vitest.config.ts",
+    "vite.config.ts",
     "src/ui"
   ]
 }

@@ -166,7 +166,7 @@ const VideoCreator: React.FC = () => {
       <form onSubmit={handleSubmit}>
         <Paper sx={{ p: 3, mb: 3 }}>
           <Grid container spacing={3}>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 fullWidth
                 label="Title"
@@ -185,7 +185,7 @@ const VideoCreator: React.FC = () => {
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 fullWidth
                 label="Description"
@@ -224,7 +224,7 @@ const VideoCreator: React.FC = () => {
             </Box>
 
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <TextField
                   fullWidth
                   label="Text"
@@ -238,7 +238,7 @@ const VideoCreator: React.FC = () => {
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <TextField
                   fullWidth
                   label="Search Terms (comma-separated)"
@@ -272,7 +272,7 @@ const VideoCreator: React.FC = () => {
 
         <Paper sx={{ p: 3, mb: 3 }}>
           <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 type="number"
@@ -281,17 +281,19 @@ const VideoCreator: React.FC = () => {
                 onChange={(e) =>
                   handleConfigChange("paddingBack", parseInt(e.target.value))
                 }
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">ms</InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">ms</InputAdornment>
+                    ),
+                  },
                 }}
                 helperText="Duration to keep playing after narration ends"
                 required
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl fullWidth>
                 <InputLabel>Music Mood</InputLabel>
                 <Select
@@ -309,7 +311,7 @@ const VideoCreator: React.FC = () => {
               </FormControl>
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl fullWidth>
                 <InputLabel>Caption Position</InputLabel>
                 <Select
@@ -329,7 +331,7 @@ const VideoCreator: React.FC = () => {
               </FormControl>
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 label="Caption Background Color"
@@ -342,7 +344,7 @@ const VideoCreator: React.FC = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl fullWidth>
                 <InputLabel>Default Voice</InputLabel>
                 <Select
@@ -360,7 +362,7 @@ const VideoCreator: React.FC = () => {
               </FormControl>
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl fullWidth>
                 <InputLabel>Orientation</InputLabel>
                 <Select
@@ -380,7 +382,7 @@ const VideoCreator: React.FC = () => {
               </FormControl>
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl fullWidth>
                 <InputLabel>Volume of the background audio</InputLabel>
                 <Select

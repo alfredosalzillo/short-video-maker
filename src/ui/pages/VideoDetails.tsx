@@ -14,7 +14,7 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DownloadIcon from '@mui/icons-material/Download';
 import CopyButton from '../components/CopyButton';
-import { VideoStatus, VideoMetadata } from '../../types/shorts';
+import { VideoMetadata } from '../../types/shorts';
 
 const VideoDetails: React.FC = () => {
   const { videoId } = useParams<{ videoId: string }>();
@@ -189,13 +189,23 @@ const VideoDetails: React.FC = () => {
 
       <Paper sx={{ p: 3 }}>
         <Grid container spacing={2} mb={3}>
-          <Grid item xs={12} sm={6}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 6,
+            }}
+          >
             <Typography variant="body2" color="text.secondary">
               Video ID
             </Typography>
             <Typography variant="body1">{videoId || "Unknown"}</Typography>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 6,
+            }}
+          >
             <Typography variant="body2" color="text.secondary">
               Status
             </Typography>
@@ -215,21 +225,27 @@ const VideoDetails: React.FC = () => {
             </Typography>
           </Grid>
           {video?.title && (
-            <Grid item xs={12}>
+            <Grid
+              size={{
+                xs: 12,
+              }}
+            >
               <TextField
                 label="Title"
                 value={video.title}
                 fullWidth
                 disabled
-                InputProps={{
-                  endAdornment: <CopyButton value={video.title} edge="end" />,
+                slotProps={{
+                  input: {
+                    endAdornment: <CopyButton value={video.title} edge="end" />,
+                  },
                 }}
                 helperText="Only supported by YouTube"
               />
             </Grid>
           )}
           {video?.description && (
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 label="Description"
                 value={video.description}
@@ -237,10 +253,12 @@ const VideoDetails: React.FC = () => {
                 multiline
                 rows={4}
                 disabled
-                InputProps={{
-                  endAdornment: (
-                    <CopyButton value={video.description} edge="end" />
-                  ),
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <CopyButton value={video.description} edge="end" />
+                    ),
+                  },
                 }}
                 helperText="Supported by TikTok, YouTube, Instagram"
               />

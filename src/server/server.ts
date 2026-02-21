@@ -37,7 +37,7 @@ export class Server {
     );
 
     // Serve the React app for all other routes (must be last)
-    this.app.get("*", (req: ExpressRequest, res: ExpressResponse) => {
+    this.app.get("{*splat}", (req: ExpressRequest, res: ExpressResponse) => {
       res.sendFile(path.join(__dirname, "../../dist/ui/index.html"));
     });
   }

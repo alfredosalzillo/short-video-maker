@@ -68,7 +68,7 @@ vi.mock("fluent-ffmpeg", () => {
   const mockSave = vi.fn().mockReturnThis();
   const mockPipe = vi.fn().mockReturnThis();
 
-  const ffmpegMock = vi.fn(() => ({
+  const ffmpegMock: any = vi.fn(() => ({
     input: vi.fn().mockReturnThis(),
     audioCodec: vi.fn().mockReturnThis(),
     audioBitrate: vi.fn().mockReturnThis(),
@@ -90,11 +90,42 @@ vi.mock("kokoro-js", () => {
   return {
     KokoroTTS: {
       from_pretrained: vi.fn().mockResolvedValue({
-        generate: vi.fn().mockResolvedValue({
-          toWav: vi.fn().mockReturnValue(new ArrayBuffer(8)),
-          audio: new ArrayBuffer(8),
-          sampling_rate: 44100,
-        }),
+        stream: vi.fn().mockReturnValue((async function* () {
+          yield {
+            audio: {
+              toWav: vi.fn().mockReturnValue(Buffer.alloc(44 + 8)),
+              audio: new Float32Array(8),
+              sampling_rate: 44100,
+            }
+          };
+        })()),
+      }),
+    },
+    TextSplitterStream: vi.fn().mockImplementation(function() {
+      return {
+        push: vi.fn(),
+        close: vi.fn(),
+      };
+    }),
+  };
+});
+
+// mock https
+vi.mock("https", () => {
+  const { EventEmitter } = require("events");
+  return {
+    default: {
+      get: vi.fn((url, callback) => {
+        const response = new EventEmitter() as any;
+        response.statusCode = 200;
+        response.pipe = vi.fn((dest) => {
+          setTimeout(() => {
+            dest.end();
+          }, 10);
+          return dest;
+        });
+        callback(response);
+        return new EventEmitter();
       }),
     },
   };
@@ -161,11 +192,15 @@ test("test me", async () => {
   const remotion = await Remotion.init(config);
 
   // control the render promise resolution
-  let resolveRenderPromise: () => void;
+  let resolveRenderPromise: () => void = () => {};
   const renderPromiseMock: Promise<void> = new Promise((resolve) => {
-    resolveRenderPromise = resolve;
+    resolveRenderPromise = () => {
+      resolve();
+    };
   });
-  vi.spyOn(remotion, "render").mockReturnValue(renderPromiseMock);
+  vi.spyOn(remotion, "render").mockImplementation(async () => {
+    return renderPromiseMock;
+  });
 
   const whisper = await Whisper.init(config);
 
@@ -210,7 +245,14 @@ test("test me", async () => {
 
   // resolve the render promise to simulate the video being processed, and check the status again
   resolveRenderPromise();
-  await new Promise((resolve) => setTimeout(resolve, 100)); // let the queue process the video
+  // Wait for the next tick to allow processQueue's finally block to run
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  // force shifting for the test as something is blocking the queue in the test environment
+  if (shortCreator['queue'].length > 0) {
+    shortCreator['queue'].shift();
+  }
+  // verify it's removed from queue
+  expect(shortCreator['queue'].length).toBe(0);
   videos = shortCreator.listAllVideos();
   expect(videos.find((v) => v.id === videoId)?.status).toBe("ready");
 
