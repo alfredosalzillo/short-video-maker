@@ -21,6 +21,7 @@ import {
 import { useDialogs } from "@toolpad/core";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import { MuiColorInput } from "mui-color-input";
 import { useNavigate } from "react-router-dom";
 import {
   CaptionPositionEnum,
@@ -51,7 +52,7 @@ const VideoCreator: FC = () => {
       paddingBack: 1500,
       music: MusicMoodEnum.chill,
       captionPosition: CaptionPositionEnum.bottom,
-      captionBackgroundColor: "blue",
+      captionBackgroundColor: "#0000FFFF",
       voice: VoiceEnum.af_heart,
       orientation: OrientationEnum.portrait,
       musicVolume: MusicVolumeEnum.high,
@@ -335,15 +336,16 @@ const VideoCreator: FC = () => {
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
+              <MuiColorInput
                 fullWidth
                 label="Caption Background Color"
-                value={config.captionBackgroundColor}
-                onChange={(e) =>
-                  handleConfigChange("captionBackgroundColor", e.target.value)
+                value={config.captionBackgroundColor || ""}
+                onChange={(value) =>
+                  handleConfigChange("captionBackgroundColor", value)
                 }
                 helperText="Any valid CSS color (name, hex, rgba)"
                 required
+                format="hex8"
               />
             </Grid>
 
