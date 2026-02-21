@@ -1,8 +1,6 @@
-## [📚 Join our Skool community for support, premium content and more!](https://www.skool.com/ai-agents-az/about?s1m)
-
-### Be part of a growing community and help us create more content like this
-
 # Description
+
+Based on [https://github.com/gyoridavid/short-video-maker](https://github.com/gyoridavid/short-video-maker)
 
 An open source automated video creation tool for generating short-form video content. Short Video Maker combines text-to-speech, automatic captions, background videos, and music to create engaging short videos from simple text inputs.
 
@@ -73,6 +71,10 @@ You can find example n8n workflows created with the REST/MCP server [in this rep
 - Background video search and selection via Pexels
 - Background music with genre/mood selection
 - Serve as both REST API and Model Context Protocol (MCP) server
+- Video title and description for video
+- Dark theme support
+- Updated dashboard design
+- Ask AI button to ask AI to generate the video scenes etc..
 
 # How It Works
 
@@ -260,8 +262,15 @@ You can load it on http://localhost:3123
 
 ## Available tools
 
-- `create-short-video` Creates a short video - the LLM will figure out the right configuration. If you want to use specific configuration, you need to specify those in you prompt.
-- `get-video-status` Somewhat useless, it’s meant for checking the status of the video, but since the AI agents aren’t really good with the concept of time, you’ll probably will end up using the REST API for that anyway.
+- `create-short-video`: Creates a short video.
+  - Parameters:
+    - `title`: Title of the video.
+    - `description`: Description of the video.
+    - `scenes`: List of scenes, each with `text` and `searchTerms`.
+    - `config`: Configuration for rendering (e.g., `music`, `voice`, `orientation`).
+- `get-video-status`: Get the status of a video (ready, processing, failed).
+  - Parameters:
+    - `videoId`: The ID of the video.
 
 # REST API
 
@@ -285,6 +294,8 @@ curl --location 'localhost:3123/health'
 curl --location 'localhost:3123/api/short-video' \
 --header 'Content-Type: application/json' \
 --data '{
+    "title": "My Awesome Short",
+    "description": "A video about rivers",
     "scenes": [
       {
         "text": "Hello world!",
@@ -300,26 +311,29 @@ curl --location 'localhost:3123/api/short-video' \
 
 ```bash
 {
-    "videoId": "cma9sjly700020jo25vwzfnv9"
+    "videoId": "123e4567-e89b-12d3-a456-426614174000"
 }
 ```
 
 ### GET `/api/short-video/{id}/status`
 
 ```bash
-curl --location 'localhost:3123/api/short-video/cm9ekme790000hysi5h4odlt1/status'
+curl --location 'localhost:3123/api/short-video/123e4567-e89b-12d3-a456-426614174000/status'
 ```
 
 ```bash
 {
-    "status": "ready"
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "status": "ready",
+    "title": "My Awesome Short",
+    "description": "A video about rivers"
 }
 ```
 
 ### GET `/api/short-video/{id}`
 
 ```bash
-curl --location 'localhost:3123/api/short-video/cm9ekme790000hysi5h4odlt1'
+curl --location 'localhost:3123/api/short-video/123e4567-e89b-12d3-a456-426614174000'
 ```
 
 Response: the binary data of the video.
@@ -334,8 +348,10 @@ curl --location 'localhost:3123/api/short-videos'
 {
     "videos": [
         {
-            "id": "cma9wcwfc0000brsi60ur4lib",
-            "status": "processing"
+            "id": "123e4567-e89b-12d3-a456-426614174000",
+            "status": "ready",
+            "title": "My Awesome Short",
+            "description": "A video about rivers"
         }
     ]
 }
@@ -344,13 +360,27 @@ curl --location 'localhost:3123/api/short-videos'
 ### DELETE `/api/short-video/{id}`
 
 ```bash
-curl --location --request DELETE 'localhost:3123/api/short-video/cma9wcwfc0000brsi60ur4lib'
+curl --location --request DELETE 'localhost:3123/api/short-video/123e4567-e89b-12d3-a456-426614174000'
 ```
 
 ```bash
 {
     "success": true
 }
+```
+
+### GET `/api/music-tags`
+
+```bash
+curl --location 'localhost:3123/api/music-tags'
+```
+
+```bash
+[
+    "chill",
+    "happy",
+    "dark"
+]
 ```
 
 ### GET `/api/voices`
