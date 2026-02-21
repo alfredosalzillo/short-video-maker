@@ -11,8 +11,8 @@ import {
   Divider,
   IconButton,
   List,
+  ListItem,
   ListItemButton,
-  ListItemSecondaryAction,
   ListItemText,
   Paper,
   Typography,
@@ -149,50 +149,10 @@ const VideoList: React.FC = () => {
               return (
                 <div key={videoId}>
                   {index > 0 && <Divider />}
-                  <ListItemButton
-                    onClick={() => handleVideoClick(videoId)}
-                    sx={{
-                      py: 2,
-                      "&:hover": {
-                        backgroundColor: "rgba(0, 0, 0, 0.04)",
-                      },
-                    }}
-                  >
-                    <ListItemText
-                      primary={videoTitle}
-                      secondary={
-                        <Box component="span">
-                          {videoDescription && (
-                            <Typography
-                              variant="body2"
-                              color="text.secondary"
-                              noWrap
-                              sx={{ maxWidth: "80%" }}
-                            >
-                              {videoDescription}
-                            </Typography>
-                          )}
-                          <Typography
-                            component="span"
-                            variant="body2"
-                            color={
-                              videoStatus === "ready"
-                                ? "success.main"
-                                : videoStatus === "processing"
-                                  ? "info.main"
-                                  : videoStatus === "failed"
-                                    ? "error.main"
-                                    : "text.secondary"
-                            }
-                            sx={{ display: "block", mb: 0.5 }}
-                          >
-                            {capitalizeFirstLetter(videoStatus)}
-                          </Typography>
-                        </Box>
-                      }
-                    />
-                    <ListItemSecondaryAction>
-                      {videoStatus === "ready" && (
+                  <ListItem
+                    disablePadding
+                    secondaryAction={
+                      <Box>
                         <IconButton
                           edge="end"
                           aria-label="Play Video"
@@ -201,18 +161,62 @@ const VideoList: React.FC = () => {
                         >
                           <PlayArrowIcon />
                         </IconButton>
-                      )}
-                      <IconButton
-                        edge="end"
-                        aria-label="Delete Video"
-                        onClick={(e) => handleDeleteVideo(videoId, e)}
-                        color="error"
-                        sx={{ ml: 1 }}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  </ListItemButton>
+                        <IconButton
+                          edge="end"
+                          aria-label="Delete Video"
+                          onClick={(e) => handleDeleteVideo(videoId, e)}
+                          color="error"
+                          sx={{ ml: 1 }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Box>
+                    }
+                  >
+                    <ListItemButton
+                      onClick={() => handleVideoClick(videoId)}
+                      sx={{
+                        py: 2,
+                        "&:hover": {
+                          backgroundColor: "rgba(0, 0, 0, 0.04)",
+                        },
+                      }}
+                    >
+                      <ListItemText
+                        primary={videoTitle}
+                        secondary={
+                          <Box component="span">
+                            {videoDescription && (
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                noWrap
+                                sx={{ maxWidth: "80%" }}
+                              >
+                                {videoDescription}
+                              </Typography>
+                            )}
+                            <Typography
+                              component="span"
+                              variant="body2"
+                              color={
+                                videoStatus === "ready"
+                                  ? "success.main"
+                                  : videoStatus === "processing"
+                                    ? "info.main"
+                                    : videoStatus === "failed"
+                                      ? "error.main"
+                                      : "text.secondary"
+                              }
+                              sx={{ display: "block", mb: 0.5 }}
+                            >
+                              {capitalizeFirstLetter(videoStatus)}
+                            </Typography>
+                          </Box>
+                        }
+                      />
+                    </ListItemButton>
+                  </ListItem>
                 </div>
               );
             })}
