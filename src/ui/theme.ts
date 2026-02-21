@@ -76,28 +76,7 @@ const theme = createTheme({
       xl: 1536,
     },
   },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: 8,
-        },
-      },
-    },
-    MuiPaper: {
-      defaultProps: {
-        variant: "outlined",
-      },
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          borderRadius: 12,
-          boxShadow: "none",
-        },
-      },
-    },
-  },
+  components: {},
 });
 
 export default theme;
