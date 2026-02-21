@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 import path from "node:path";
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react({})],
   root: "src/ui",
   build: {
     outDir: path.resolve(__dirname, "dist/ui"),
