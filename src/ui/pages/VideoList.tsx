@@ -9,6 +9,7 @@ import {
   Button,
   CircularProgress,
   Divider,
+  Fab,
   IconButton,
   List,
   ListItem,
@@ -100,23 +101,6 @@ const VideoList: React.FC = () => {
 
   return (
     <Box>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={4}
-      >
-        <Box />
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<AddIcon />}
-          onClick={handleCreateNew}
-        >
-          Create New Video
-        </Button>
-      </Box>
-
       {error && (
         <Alert severity="error" sx={{ mb: 3 }}>
           {error}
@@ -223,6 +207,19 @@ const VideoList: React.FC = () => {
           </List>
         </Paper>
       )}
+
+      <Fab
+        color="primary"
+        aria-label="add"
+        onClick={handleCreateNew}
+        sx={{
+          position: "fixed",
+          bottom: 32,
+          right: 32,
+        }}
+      >
+        <AddIcon />
+      </Fab>
     </Box>
   );
 };
