@@ -61,6 +61,7 @@
     "@remotion/renderer": "^4.0.427",
     "@remotion/zod-types": "^4.0.427",
     "@tanstack/react-query": "^5.90.21",
+    "@toolpad/core": "^0.16.0",
     "@types/react-dom": "^19.2.3",
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.13.5",

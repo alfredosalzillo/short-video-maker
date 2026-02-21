@@ -85,16 +85,14 @@ const VideoList: React.FC = () => {
   }
 
   return (
-    <Box maxWidth="md" mx="auto" py={4}>
+    <Box>
       <Box
         display="flex"
         justifyContent="space-between"
         alignItems="center"
         mb={4}
       >
-        <Typography variant="h4" component="h1">
-          Your Videos
-        </Typography>
+        <Box />
         <Button
           variant="contained"
           color="primary"

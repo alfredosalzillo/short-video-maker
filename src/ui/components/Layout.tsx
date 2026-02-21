@@ -1,81 +1,111 @@
 import type React from "react";
+import { useMemo } from "react";
 import AddIcon from "@mui/icons-material/Add";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import LightModeIcon from "@mui/icons-material/LightMode";
 import VideoIcon from "@mui/icons-material/VideoLibrary";
+import { createTheme } from "@mui/material";
 import {
-  AppBar,
-  Box,
-  Button,
-  Container,
-  CssBaseline,
-  IconButton,
-  ThemeProvider,
-  Toolbar,
-  Typography,
-} from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { useColorMode } from "../hooks/useColorMode";
+  AppProvider,
+  DashboardLayout,
+  type Navigation,
+  PageContainer,
+  ThemeSwitcher,
+} from "@toolpad/core";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+
+const NAVIGATION: Navigation = [
+  {
+    kind: "header",
+    title: "Main items",
+  },
+  {
+    segment: "video",
+    pattern: "video{/:orderId}*",
+    title: "Video List",
+    icon: <VideoIcon />,
+  },
+  {
+    segment: "create",
+    title: "Create Video",
+    icon: <AddIcon />,
+  },
+];
+
+const theme = createTheme({
+  cssVariables: {
+    colorSchemeSelector: "data-toolpad-color-scheme",
+  },
+  colorSchemes: {
+    light: {
+      palette: {
+        primary: {
+          main: "#1976d2",
+        },
+        secondary: {
+          main: "#f50057",
+        },
+      },
+    },
+    dark: {
+      palette: {
+        primary: {
+          main: "#90caf9",
+        },
+        secondary: {
+          main: "#f48fb1",
+        },
+      },
+    },
+  },
+  typography: {
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+  },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 900,
+      lg: 1200,
+      xl: 1536,
+    },
+  },
+});
 
 interface LayoutProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const navigate = useNavigate();
-  const { mode, toggleColorMode, theme } = useColorMode();
+  const location = useLocation();
+
+  const router = useMemo(() => {
+    return {
+      pathname: location.pathname,
+      searchParams: new URLSearchParams(location.search),
+      navigate: (path: string | URL) => navigate(path.toString()),
+    };
+  }, [navigate, location]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Box
-        sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+    <AppProvider
+      navigation={NAVIGATION}
+      router={router}
+      theme={theme}
+      branding={{
+        logo: <VideoIcon color="primary" />,
+        title: "Short Video Maker",
+      }}
+    >
+      <DashboardLayout
+        slotProps={{
+          toolbarActions: {
+            children: <ThemeSwitcher />,
+          },
+        }}
       >
-        <AppBar position="static">
-          <Toolbar>
-            <VideoIcon sx={{ mr: 2 }} />
-            <Typography
-              variant="h6"
-              component="div"
-              sx={{ flexGrow: 1, cursor: "pointer" }}
-              onClick={() => navigate("/")}
-            >
-              Short Video Maker
-            </Typography>
-            <Button
-              color="inherit"
-              startIcon={<AddIcon />}
-              onClick={() => navigate("/create")}
-              sx={{ mr: 2 }}
-            >
-              Create Video
-            </Button>
-            <IconButton onClick={toggleColorMode} color="inherit">
-              {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        <Container component="main" sx={{ flexGrow: 1, py: 4 }}>
-          {children}
-        </Container>
-        <Box
-          component="footer"
-          sx={{
-            py: 3,
-            mt: "auto",
-            backgroundColor: (theme) =>
-              theme.palette.mode === "light"
-                ? theme.palette.grey[200]
-                : theme.palette.grey[900],
-            textAlign: "center",
-          }}
-        >
-          <Typography variant="body2" color="text.secondary">
-            Short Video Maker &copy; {new Date().getFullYear()}
-          </Typography>
-        </Box>
-      </Box>
-    </ThemeProvider>
+        <PageContainer>{children ?? <Outlet />}</PageContainer>
+      </DashboardLayout>
+    </AppProvider>
   );
 };
 

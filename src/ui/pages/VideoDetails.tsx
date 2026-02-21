@@ -1,6 +1,5 @@
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import DownloadIcon from "@mui/icons-material/Download";
 import {
   Alert,
@@ -8,18 +7,16 @@ import {
   Button,
   CircularProgress,
   Grid,
-  Paper,
   TextField,
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import type { VideoMetadata } from "../../types/shorts";
 import CopyButton from "../components/CopyButton";
 
 const VideoDetails: React.FC = () => {
   const { videoId } = useParams<{ videoId: string }>();
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [video, setVideo] = useState<VideoMetadata | null>(null);
@@ -77,10 +74,6 @@ const VideoDetails: React.FC = () => {
       }
     };
   }, [checkVideoStatus]);
-
-  const handleBack = () => {
-    navigate("/");
-  };
 
   const renderContent = () => {
     if (loading) {
@@ -183,101 +176,86 @@ const VideoDetails: React.FC = () => {
   };
 
   return (
-    <Box maxWidth="md" mx="auto" py={4}>
-      <Box display="flex" alignItems="center" mb={3}>
-        <Button
-          startIcon={<ArrowBackIcon />}
-          onClick={handleBack}
-          sx={{ mr: 2 }}
+    <Box>
+      <Grid container spacing={2} mb={3}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 6,
+          }}
         >
-          Back to videos
-        </Button>
-        <Typography variant="h4" component="h1">
-          Video Details
-        </Typography>
-      </Box>
-
-      <Paper sx={{ p: 3 }}>
-        <Grid container spacing={2} mb={3}>
-          <Grid
-            size={{
-              xs: 12,
-              sm: 6,
-            }}
-          >
-            <Typography variant="body2" color="text.secondary">
-              Video ID
-            </Typography>
-            <Typography variant="body1">{videoId || "Unknown"}</Typography>
-          </Grid>
-          <Grid
-            size={{
-              xs: 12,
-              sm: 6,
-            }}
-          >
-            <Typography variant="body2" color="text.secondary">
-              Status
-            </Typography>
-            <Typography
-              variant="body1"
-              color={
-                video?.status === "ready"
-                  ? "success.main"
-                  : video?.status === "processing"
-                    ? "info.main"
-                    : video?.status === "failed"
-                      ? "error.main"
-                      : "text.primary"
-              }
-            >
-              {capitalizeFirstLetter(video?.status || "unknown")}
-            </Typography>
-          </Grid>
-          {video?.title && (
-            <Grid
-              size={{
-                xs: 12,
-              }}
-            >
-              <TextField
-                label="Title"
-                value={video.title}
-                fullWidth
-                disabled
-                slotProps={{
-                  input: {
-                    endAdornment: <CopyButton value={video.title} edge="end" />,
-                  },
-                }}
-                helperText="Only supported by YouTube"
-              />
-            </Grid>
-          )}
-          {video?.description && (
-            <Grid size={{ xs: 12 }}>
-              <TextField
-                label="Description"
-                value={video.description}
-                fullWidth
-                multiline
-                rows={4}
-                disabled
-                slotProps={{
-                  input: {
-                    endAdornment: (
-                      <CopyButton value={video.description} edge="end" />
-                    ),
-                  },
-                }}
-                helperText="Supported by TikTok, YouTube, Instagram"
-              />
-            </Grid>
-          )}
+          <Typography variant="body2" color="text.secondary">
+            Video ID
+          </Typography>
+          <Typography variant="body1">{videoId || "Unknown"}</Typography>
         </Grid>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 6,
+          }}
+        >
+          <Typography variant="body2" color="text.secondary">
+            Status
+          </Typography>
+          <Typography
+            variant="body1"
+            color={
+              video?.status === "ready"
+                ? "success.main"
+                : video?.status === "processing"
+                  ? "info.main"
+                  : video?.status === "failed"
+                    ? "error.main"
+                    : "text.primary"
+            }
+          >
+            {capitalizeFirstLetter(video?.status || "unknown")}
+          </Typography>
+        </Grid>
+        {video?.title && (
+          <Grid
+            size={{
+              xs: 12,
+            }}
+          >
+            <TextField
+              label="Title"
+              value={video.title}
+              fullWidth
+              disabled
+              slotProps={{
+                input: {
+                  endAdornment: <CopyButton value={video.title} edge="end" />,
+                },
+              }}
+              helperText="Only supported by YouTube"
+            />
+          </Grid>
+        )}
+        {video?.description && (
+          <Grid size={{ xs: 12 }}>
+            <TextField
+              label="Description"
+              value={video.description}
+              fullWidth
+              multiline
+              rows={4}
+              disabled
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <CopyButton value={video.description} edge="end" />
+                  ),
+                },
+              }}
+              helperText="Supported by TikTok, YouTube, Instagram"
+            />
+          </Grid>
+        )}
+      </Grid>
 
-        {renderContent()}
-      </Paper>
+      {renderContent()}
     </Box>
   );
 };

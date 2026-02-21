@@ -156,11 +156,7 @@ const VideoCreator: React.FC = () => {
   }
 
   return (
-    <Box maxWidth="md" mx="auto" py={4}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Create New Video
-      </Typography>
-
+    <Box>
       {error && (
         <Alert severity="error" sx={{ mb: 3 }}>
           {error}

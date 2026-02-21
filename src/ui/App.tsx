@@ -10,9 +10,9 @@ const App: React.FC = () => {
     <Router>
       <Layout>
         <Routes>
-          <Route path="/" element={<VideoList />} />
-          <Route path="/create" element={<VideoCreator />} />
+          <Route index path="/video" element={<VideoList />} />
           <Route path="/video/:videoId" element={<VideoDetails />} />
+          <Route path="create" element={<VideoCreator />} />
         </Routes>
       </Layout>
     </Router>
