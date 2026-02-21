@@ -1,13 +1,11 @@
 import type React from "react";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import {
   Alert,
   Box,
   Button,
   CircularProgress,
-  Divider,
   Fab,
   IconButton,
   List,
@@ -117,85 +115,74 @@ const VideoList: React.FC = () => {
           </Button>
         </Paper>
       ) : (
-        <Paper>
-          <List>
+        <Paper variant="outlined">
+          <List dense disablePadding>
             {videos.map((video, index) => {
               const videoId = video?.id || "";
               const videoStatus = video?.status || "unknown";
-              const videoTitle = `${video?.title ?? "Unknown"} (${videoId})`;
+              const videoTitle = `${video?.title ?? "Unknown"}`;
               const videoDescription = video?.description;
               const createdAt = video?.createdAt;
 
               return (
-                <div key={videoId}>
-                  {index > 0 && <Divider />}
-                  <ListItem
-                    disablePadding
-                    secondaryAction={
-                      <Box>
-                        <IconButton
-                          edge="end"
-                          aria-label="Play Video"
-                          onClick={() => handleVideoClick(videoId)}
-                          color="primary"
-                        >
-                          <PlayArrowIcon />
-                        </IconButton>
-                        <IconButton
-                          edge="end"
-                          aria-label="Delete Video"
-                          onClick={(e) => handleDeleteVideo(videoId, e)}
-                          color="error"
-                          sx={{ ml: 1 }}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </Box>
-                    }
-                  >
-                    <ListItemButton
-                      onClick={() => handleVideoClick(videoId)}
-                      sx={{
-                        py: 2,
-                        "&:hover": {
-                          backgroundColor: "rgba(0, 0, 0, 0.04)",
-                        },
-                      }}
+                <ListItem
+                  key={videoId}
+                  disablePadding
+                  divider={index < videos.length - 1}
+                  secondaryAction={
+                    <IconButton
+                      edge="end"
+                      aria-label="Delete Video"
+                      onClick={(e) => handleDeleteVideo(videoId, e)}
+                      color="error"
+                      sx={{ ml: 1 }}
                     >
-                      <ListItemText
-                        primary={videoTitle}
-                        secondary={
-                          <Box component="span">
-                            {videoDescription && (
-                              <Typography
-                                variant="body2"
-                                color="text.secondary"
-                                noWrap
-                                sx={{ maxWidth: "80%" }}
-                              >
-                                {videoDescription}
-                              </Typography>
-                            )}
-                            {createdAt && (
-                              <Typography
-                                variant="caption"
-                                color="text.disabled"
-                                display="block"
-                                sx={{ mb: 0.5 }}
-                              >
-                                {new Date(createdAt).toLocaleString()}
-                              </Typography>
-                            )}
-                            <VideoStatus
-                              status={videoStatus}
-                              sx={{ display: "block", mb: 0.5 }}
-                            />
-                          </Box>
-                        }
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                </div>
+                      <DeleteIcon />
+                    </IconButton>
+                  }
+                >
+                  <ListItemButton
+                    onClick={() => handleVideoClick(videoId)}
+                    sx={{
+                      py: 2,
+                      "&:hover": {
+                        backgroundColor: "rgba(0, 0, 0, 0.04)",
+                      },
+                    }}
+                  >
+                    <ListItemText
+                      primary={videoTitle}
+                      secondary={
+                        <Box component="span">
+                          {videoDescription && (
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              noWrap
+                              sx={{ maxWidth: "80%" }}
+                            >
+                              {videoDescription}
+                            </Typography>
+                          )}
+                          {createdAt && (
+                            <Typography
+                              variant="caption"
+                              color="text.disabled"
+                              display="block"
+                              sx={{ mb: 0.5 }}
+                            >
+                              {new Date(createdAt).toLocaleString()}
+                            </Typography>
+                          )}
+                          <VideoStatus
+                            status={videoStatus}
+                            sx={{ display: "block", mb: 0.5 }}
+                          />
+                        </Box>
+                      }
+                    />
+                  </ListItemButton>
+                </ListItem>
               );
             })}
           </List>
