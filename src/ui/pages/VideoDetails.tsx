@@ -14,6 +14,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import type { VideoMetadata } from "../../types/shorts";
 import CopyButton from "../components/CopyButton";
+import VideoStatus from "../components/VideoStatus";
 
 const VideoDetails: React.FC = () => {
   const { videoId } = useParams<{ videoId: string }>();
@@ -33,11 +34,6 @@ const VideoDetails: React.FC = () => {
     },
     enabled: !!videoId,
   });
-
-  const capitalizeFirstLetter = (str: string) => {
-    if (!str || typeof str !== "string") return "Unknown";
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  };
 
   return (
     <Box>
@@ -62,20 +58,11 @@ const VideoDetails: React.FC = () => {
           <Typography variant="body2" color="text.secondary">
             Status
           </Typography>
-          <Typography
+          <VideoStatus
+            status={video?.status || "unknown"}
+            component="p"
             variant="body1"
-            color={
-              video?.status === "ready"
-                ? "success.main"
-                : video?.status === "processing"
-                  ? "info.main"
-                  : video?.status === "failed"
-                    ? "error.main"
-                    : "text.primary"
-            }
-          >
-            {capitalizeFirstLetter(video?.status || "unknown")}
-          </Typography>
+          />
         </Grid>
         {video && (
           <>

@@ -22,6 +22,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import type { VideoMetadata } from "../../types/shorts";
+import VideoStatus from "../components/VideoStatus";
 
 const VideoList: React.FC = () => {
   const navigate = useNavigate();
@@ -76,11 +77,6 @@ const VideoList: React.FC = () => {
     if (!confirmed) return;
 
     deleteMutation.mutate(id);
-  };
-
-  const capitalizeFirstLetter = (str: string) => {
-    if (!str || typeof str !== "string") return "Unknown";
-    return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
   if (isLoading) {
@@ -179,22 +175,10 @@ const VideoList: React.FC = () => {
                                 {videoDescription}
                               </Typography>
                             )}
-                            <Typography
-                              component="span"
-                              variant="body2"
-                              color={
-                                videoStatus === "ready"
-                                  ? "success.main"
-                                  : videoStatus === "processing"
-                                    ? "info.main"
-                                    : videoStatus === "failed"
-                                      ? "error.main"
-                                      : "text.secondary"
-                              }
+                            <VideoStatus
+                              status={videoStatus}
                               sx={{ display: "block", mb: 0.5 }}
-                            >
-                              {capitalizeFirstLetter(videoStatus)}
-                            </Typography>
+                            />
                           </Box>
                         }
                       />
