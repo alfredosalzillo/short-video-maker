@@ -1,6 +1,11 @@
 import type React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from "react-router-dom";
 import Layout from "./components/Layout";
 import VideoCreator from "./pages/VideoCreator";
 import VideoDetails from "./pages/VideoDetails";
@@ -14,7 +19,12 @@ const App: React.FC = () => {
       <Router>
         <Layout>
           <Routes>
-            <Route index path="/video" element={<VideoList />} />
+            <Route
+              index
+              path="/"
+              element={<Navigate to="/video" replace={true} />}
+            />
+            <Route path="/video" element={<VideoList />} />
             <Route path="/video/:videoId" element={<VideoDetails />} />
             <Route path="create" element={<VideoCreator />} />
           </Routes>
