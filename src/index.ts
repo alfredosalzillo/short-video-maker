@@ -4,13 +4,13 @@ import fs from "fs-extra";
 import { Config } from "./config";
 import { logger } from "./logger";
 import { Server } from "./server/server";
-import { FFMpeg } from "./short-creator/libraries/FFmpeg";
-import { Kokoro } from "./short-creator/libraries/Kokoro";
-import { PexelsAPI } from "./short-creator/libraries/Pexels";
-import { Remotion } from "./short-creator/libraries/Remotion";
-import { Whisper } from "./short-creator/libraries/Whisper";
-import { MusicManager } from "./short-creator/music";
-import { ShortCreator } from "./short-creator/ShortCreator";
+import { FFMpeg } from "./server/short-creator/libraries/FFmpeg";
+import { Kokoro } from "./server/short-creator/libraries/Kokoro";
+import { PexelsAPI } from "./server/short-creator/libraries/Pexels";
+import { Remotion } from "./server/short-creator/libraries/Remotion";
+import { Whisper } from "./server/short-creator/libraries/Whisper";
+import { MusicManager } from "./server/short-creator/music";
+import { ShortCreator } from "./server/short-creator/ShortCreator";
 import path from "node:path";
 
 async function main() {

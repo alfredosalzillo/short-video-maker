@@ -6,7 +6,7 @@ import express from "express";
 import fs from "fs-extra";
 import type { Config } from "../../config";
 import { logger } from "../../logger";
-import type { ShortCreator } from "../../short-creator/ShortCreator";
+import type { ShortCreator } from "../short-creator/ShortCreator";
 import { validateCreateShortInput } from "../validator";
 import path from "node:path";
 

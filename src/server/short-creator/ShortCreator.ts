@@ -1,8 +1,7 @@
 /* eslint-disable @remotion/deterministic-randomness */
 import fs from "fs-extra";
-import type { Config } from "../config";
-import { logger } from "../logger";
-import { OrientationEnum } from "./../types/shorts";
+import type { Config } from "../../config";
+import { logger } from "../../logger";
 import type {
   MusicForVideo,
   MusicMoodEnum,
@@ -12,7 +11,8 @@ import type {
   SceneInput,
   VideoMetadata,
   VideoStatus,
-} from "../types/shorts";
+} from "../../types/shorts";
+import { OrientationEnum } from "../../types/shorts";
 import type { FFMpeg } from "./libraries/FFmpeg";
 import type { Kokoro } from "./libraries/Kokoro";
 import type { PexelsAPI } from "./libraries/Pexels";

@@ -6,7 +6,7 @@ import("@ffmpeg-installer/ffmpeg");
 import fs from "fs-extra";
 import { Config } from "../config";
 import { logger } from "../logger";
-import { MusicManager } from "../short-creator/music";
+import { MusicManager } from "../server/short-creator/music";
 
 async function normalize(inputPath: string, outputPath: string) {
   return new Promise((resolve, reject) => {

@@ -2,7 +2,7 @@ process.env.LOG_LEVEL = "debug";
 
 import fs from "fs-extra";
 import { expect, test, vi } from "vitest";
-import { Config } from "../config";
+import { Config } from "../../config";
 import { FFMpeg } from "./libraries/FFmpeg";
 import { Kokoro } from "./libraries/Kokoro";
 import { PexelsAPI } from "./libraries/Pexels";

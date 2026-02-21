@@ -1,7 +1,8 @@
 /* eslint-disable @remotion/deterministic-randomness */
-import { getOrientationConfig } from "../../components/utils";
-import { logger } from "../../logger";
-import { OrientationEnum, type Video } from "../../types/shorts";
+
+import { logger } from "../../../logger";
+import { getOrientationConfig } from "../../../remotion/utils";
+import { OrientationEnum, type Video } from "../../../types/shorts";
 
 const jokerTerms: string[] = ["nature", "globe", "space", "ocean"];
 const durationBufferSeconds = 3;

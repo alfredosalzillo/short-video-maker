@@ -5,13 +5,13 @@ import {
   selectComposition,
 } from "@remotion/renderer";
 import type z from "zod";
+import type { Config } from "../../../config";
+import { logger } from "../../../logger";
 import {
   getOrientationConfig,
   type shortVideoSchema,
-} from "../../components/utils";
-import type { Config } from "../../config";
-import { logger } from "../../logger";
-import type { OrientationEnum } from "../../types/shorts";
+} from "../../../remotion/utils";
+import type { OrientationEnum } from "../../../types/shorts";
 import path from "node:path";
 
 export class Remotion {
@@ -27,7 +27,7 @@ export class Remotion {
       entryPoint: path.join(
         config.packageDirPath,
         config.devMode ? "src" : "dist",
-        "components",
+        "remotion",
         "root",
         `index.${config.devMode ? "ts" : "js"}`,
       ),

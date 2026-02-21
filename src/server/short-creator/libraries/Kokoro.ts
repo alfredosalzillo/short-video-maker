@@ -1,10 +1,10 @@
 import { KokoroTTS, TextSplitterStream } from "kokoro-js";
-import { KOKORO_MODEL, logger } from "../../config";
+import { KOKORO_MODEL, logger } from "../../../config";
 import {
   type kokoroModelPrecision,
   VoiceEnum,
   type Voices,
-} from "../../types/shorts";
+} from "../../../types/shorts";
 
 export class Kokoro {
   constructor(private tts: KokoroTTS) {}

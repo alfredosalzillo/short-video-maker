@@ -3,8 +3,8 @@ import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import express from "express";
 import z from "zod";
 import { logger } from "../../logger";
-import type { ShortCreator } from "../../short-creator/ShortCreator";
 import { renderConfig, sceneInput } from "../../types/shorts";
+import type { ShortCreator } from "../short-creator/ShortCreator";
 
 export class MCPRouter {
   router: express.Router;

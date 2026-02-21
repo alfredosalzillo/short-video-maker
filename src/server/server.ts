@@ -5,9 +5,9 @@ import type {
 import express from "express";
 import type { Config } from "../config";
 import { logger } from "../logger";
-import type { ShortCreator } from "../short-creator/ShortCreator";
 import { MCPRouter } from "./routers/mcp";
 import { APIRouter } from "./routers/rest";
+import type { ShortCreator } from "./short-creator/ShortCreator";
 import type http from "node:http";
 import path from "node:path";
 

@@ -1,5 +1,5 @@
 import ffmpeg from "fluent-ffmpeg";
-import { logger } from "../../logger";
+import { logger } from "../../../logger";
 import { Readable } from "node:stream";
 
 export class FFMpeg {

@@ -3,7 +3,7 @@ process.env.LOG_LEVEL = "debug";
 import fs from "fs-extra";
 import nock from "nock";
 import { assert, expect, test } from "vitest";
-import { OrientationEnum } from "../../types/shorts";
+import { OrientationEnum } from "../../../types/shorts";
 import { PexelsAPI } from "./Pexels";
 import path from "node:path";
 
