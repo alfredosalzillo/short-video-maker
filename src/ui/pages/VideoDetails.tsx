@@ -1,5 +1,4 @@
 import type React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
 import DownloadIcon from "@mui/icons-material/Download";
 import {
   Alert,
@@ -10,6 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import type { VideoMetadata } from "../../types/shorts";
@@ -17,158 +17,22 @@ import CopyButton from "../components/CopyButton";
 
 const VideoDetails: React.FC = () => {
   const { videoId } = useParams<{ videoId: string }>();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [video, setVideo] = useState<VideoMetadata | null>(null);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const isMounted = useRef(true);
 
-  const checkVideoStatus = useCallback(async () => {
-    try {
+  const {
+    data: video,
+    isLoading,
+    error: fetchError,
+  } = useQuery({
+    queryKey: ["video", videoId],
+    queryFn: async () => {
       const response = await axios.get(`/api/short-video/${videoId}/status`);
-      const videoData = response.data;
-
-      if (isMounted.current) {
-        setVideo(videoData);
-        console.log("videoStatus", videoData.status);
-
-        if (videoData.status !== "processing") {
-          console.log("video is not processing");
-          console.log("interval", intervalRef.current);
-
-          if (intervalRef.current) {
-            console.log("clearing interval");
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
-          }
-        }
-
-        setLoading(false);
-      }
-    } catch (error) {
-      if (isMounted.current) {
-        setError("Failed to fetch video details");
-        setLoading(false);
-        console.error("Error fetching video status:", error);
-
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-          intervalRef.current = null;
-        }
-      }
-    }
-  }, [videoId]);
-
-  useEffect(() => {
-    checkVideoStatus();
-
-    intervalRef.current = setInterval(() => {
-      checkVideoStatus();
-    }, 5000);
-
-    return () => {
-      isMounted.current = false;
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    };
-  }, [checkVideoStatus]);
-
-  const renderContent = () => {
-    if (loading) {
-      return (
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          minHeight="30vh"
-        >
-          <CircularProgress />
-        </Box>
-      );
-    }
-
-    if (error) {
-      return <Alert severity="error">{error}</Alert>;
-    }
-
-    if (video?.status === "processing") {
-      return (
-        <Box textAlign="center" py={4}>
-          <CircularProgress size={60} sx={{ mb: 2 }} />
-          <Typography variant="h6">Your Video Is Being Created…</Typography>
-          <Typography variant="body1" color="text.secondary">
-            This may take a few minutes. Please wait.
-          </Typography>
-        </Box>
-      );
-    }
-
-    if (video?.status === "ready") {
-      return (
-        <Box>
-          <Box mb={3} textAlign="center">
-            <Typography variant="h6" color="success.main" gutterBottom>
-              Your Video Is Ready!
-            </Typography>
-          </Box>
-
-          <Box
-            sx={{
-              position: "relative",
-              paddingTop: "56.25%",
-              mb: 3,
-              backgroundColor: "#000",
-            }}
-          >
-            <video
-              controls
-              autoPlay
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-              }}
-              src={`/api/short-video/${videoId}`}
-            >
-              <track kind="captions" />
-            </video>
-          </Box>
-
-          <Box textAlign="center">
-            <Button
-              component="a"
-              href={`/api/short-video/${videoId}`}
-              download
-              variant="contained"
-              color="primary"
-              startIcon={<DownloadIcon />}
-              sx={{ textDecoration: "none" }}
-            >
-              Download Video
-            </Button>
-          </Box>
-        </Box>
-      );
-    }
-
-    if (video?.status === "failed") {
-      return (
-        <Alert severity="error" sx={{ mb: 3 }}>
-          Video processing failed. Please try again with different settings.
-        </Alert>
-      );
-    }
-
-    return (
-      <Alert severity="info" sx={{ mb: 3 }}>
-        Unknown video status. Please try refreshing the page.
-      </Alert>
-    );
-  };
+      return response.data as VideoMetadata;
+    },
+    refetchInterval: (query) => {
+      return query.state.data?.status === "processing" ? 5000 : false;
+    },
+    enabled: !!videoId,
+  });
 
   const capitalizeFirstLetter = (str: string) => {
     if (!str || typeof str !== "string") return "Unknown";
@@ -254,8 +118,89 @@ const VideoDetails: React.FC = () => {
           </Grid>
         )}
       </Grid>
+      {isLoading && (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="30vh"
+        >
+          <CircularProgress />
+        </Box>
+      )}
+      {fetchError && (
+        <Alert severity="error">
+          {fetchError instanceof Error
+            ? fetchError.message
+            : "Failed to fetch video details"}
+        </Alert>
+      )}
+      {video?.status === "processing" && (
+        <Box textAlign="center" py={4}>
+          <CircularProgress size={60} sx={{ mb: 2 }} />
+          <Typography variant="h6">Your Video Is Being Created…</Typography>
+          <Typography variant="body1" color="text.secondary">
+            This may take a few minutes. Please wait.
+          </Typography>
+        </Box>
+      )}
+      {video?.status === "failed" && (
+        <Alert severity="error">
+          Video processing failed. Please try again with different settings.
+        </Alert>
+      )}
+      {video?.status === "ready" && (
+        <Box>
+          <Box mb={3} textAlign="center">
+            <Typography variant="h6" color="success.main" gutterBottom>
+              Your Video Is Ready!
+            </Typography>
+          </Box>
 
-      {renderContent()}
+          <Box
+            sx={{
+              position: "relative",
+              paddingTop: "56.25%",
+              mb: 3,
+              backgroundColor: "#000",
+            }}
+          >
+            <video
+              controls
+              autoPlay
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+              }}
+              src={`/api/short-video/${videoId}`}
+            >
+              <track kind="captions" />
+            </video>
+          </Box>
+
+          <Box textAlign="center">
+            <Button
+              component="a"
+              href={`/api/short-video/${videoId}`}
+              download
+              variant="contained"
+              color="primary"
+              startIcon={<DownloadIcon />}
+              sx={{ textDecoration: "none" }}
+            >
+              Download Video
+            </Button>
+          </Box>
+        </Box>
+      )}
+      {!video && !isLoading && !fetchError && (
+        <Alert severity="info" sx={{ mb: 3 }}>
+          Unknown video status. Please try refreshing the page.
+        </Alert>
+      )}
     </Box>
   );
 };

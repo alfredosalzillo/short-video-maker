@@ -1,5 +1,4 @@
 import type React from "react";
-import { useCallback, useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -19,6 +18,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useDialogs } from "@toolpad/core";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import type { VideoMetadata } from "../../types/shorts";
@@ -26,25 +26,28 @@ import type { VideoMetadata } from "../../types/shorts";
 const VideoList: React.FC = () => {
   const navigate = useNavigate();
   const dialogs = useDialogs();
-  const [videos, setVideos] = useState<VideoMetadata[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const fetchVideos = useCallback(async () => {
-    try {
+  const {
+    data: videos = [],
+    isLoading,
+    error: fetchError,
+  } = useQuery({
+    queryKey: ["videos"],
+    queryFn: async () => {
       const response = await axios.get("/api/short-videos");
-      setVideos(response.data.videos || []);
-      setLoading(false);
-    } catch (err) {
-      setError("Failed to fetch videos");
-      setLoading(false);
-      console.error("Error fetching videos:", err);
-    }
-  }, []);
+      return (response.data.videos || []) as VideoMetadata[];
+    },
+  });
 
-  useEffect(() => {
-    fetchVideos();
-  }, [fetchVideos]);
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await axios.delete(`/api/short-video/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["videos"] });
+    },
+  });
 
   const handleCreateNew = () => {
     navigate("/create");
@@ -72,13 +75,7 @@ const VideoList: React.FC = () => {
 
     if (!confirmed) return;
 
-    try {
-      await axios.delete(`/api/short-video/${id}`);
-      fetchVideos();
-    } catch (err) {
-      setError("Failed to delete video");
-      console.error("Error deleting video:", err);
-    }
+    deleteMutation.mutate(id);
   };
 
   const capitalizeFirstLetter = (str: string) => {
@@ -86,7 +83,7 @@ const VideoList: React.FC = () => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Box
         display="flex"
@@ -99,11 +96,13 @@ const VideoList: React.FC = () => {
     );
   }
 
+  const error = fetchError || deleteMutation.error;
+
   return (
     <Box>
       {error && (
         <Alert severity="error" sx={{ mb: 3 }}>
-          {error}
+          {error instanceof Error ? error.message : "An error occurred"}
         </Alert>
       )}
 

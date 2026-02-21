@@ -1,12 +1,11 @@
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Alert,
   Box,
   Button,
-  CircularProgress,
   Divider,
   FormControl,
   Grid,
@@ -19,6 +18,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {
@@ -53,34 +53,20 @@ const VideoCreator: React.FC = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [_voices, setVoices] = useState<VoiceEnum[]>([]);
-  const [_musicTags, setMusicTags] = useState<MusicMoodEnum[]>([]);
-  const [loadingOptions, setLoadingOptions] = useState(true);
-
-  useEffect(() => {
-    const fetchOptions = async () => {
-      try {
-        const [voicesResponse, musicResponse] = await Promise.all([
-          axios.get("/api/voices"),
-          axios.get("/api/music-tags"),
-        ]);
-
-        setVoices(voicesResponse.data);
-        setMusicTags(musicResponse.data);
-      } catch (err) {
-        console.error("Failed to fetch options:", err);
-        setError(
-          "Failed to load voices and music options. Please refresh the page.",
-        );
-      } finally {
-        setLoadingOptions(false);
-      }
-    };
-
-    fetchOptions();
-  }, []);
+  const createMutation = useMutation({
+    mutationFn: async (data: {
+      scenes: SceneInput[];
+      config: RenderConfig;
+      title: string;
+      description: string;
+    }) => {
+      const response = await axios.post("/api/short-video", data);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      navigate(`/video/${data.videoId}`);
+    },
+  });
 
   const handleAddScene = () => {
     setScenes([...scenes, { text: "", searchTerms: "" }]);
@@ -111,55 +97,33 @@ const VideoCreator: React.FC = () => {
     setConfig({ ...config, [field]: value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
 
-    try {
-      // Convert scenes to the expected API format
-      const apiScenes: SceneInput[] = scenes.map((scene) => ({
+    createMutation.mutate({
+      scenes: scenes.map((scene) => ({
         text: scene.text,
         searchTerms: scene.searchTerms
           .split(",")
           .map((term) => term.trim())
           .filter((term) => term.length > 0),
-      }));
-
-      const response = await axios.post("/api/short-video", {
-        scenes: apiScenes,
-        config,
-        title,
-        description,
-      });
-
-      navigate(`/video/${response.data.videoId}`);
-    } catch (err) {
-      setError("Failed to create video. Please try again.");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+      })),
+      config,
+      title,
+      description,
+    });
   };
 
-  if (loadingOptions) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="80vh"
-      >
-        <CircularProgress />
-      </Box>
-    );
-  }
+  const error =
+    createMutation.error instanceof Error
+      ? createMutation.error.message
+      : createMutation.error;
 
   return (
     <Box>
       {error && (
         <Alert severity="error" sx={{ mb: 3 }}>
-          {error}
+          {typeof error === "string" ? error : "An error occurred"}
         </Alert>
       )}
 
@@ -415,14 +379,9 @@ const VideoCreator: React.FC = () => {
             variant="contained"
             color="primary"
             size="large"
-            disabled={loading}
-            sx={{ minWidth: 200 }}
+            loading={createMutation.isPending}
           >
-            {loading ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : (
-              "Create Video"
-            )}
+            Create Video
           </Button>
         </Box>
       </form>
