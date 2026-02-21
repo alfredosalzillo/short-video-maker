@@ -138,12 +138,6 @@ const VideoDetails: React.FC = () => {
       )}
       {video?.status === "ready" && (
         <Box>
-          <Box mb={3} textAlign="center">
-            <Typography variant="h6" color="success.main" gutterBottom>
-              Your Video Is Ready!
-            </Typography>
-          </Box>
-
           <Box
             sx={{
               position: "relative",
