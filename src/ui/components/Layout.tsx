@@ -9,32 +9,21 @@ import {
   Typography,
   Button,
   ThemeProvider,
-  createTheme
+  IconButton
 } from '@mui/material';
 import VideoIcon from '@mui/icons-material/VideoLibrary';
 import AddIcon from '@mui/icons-material/Add';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import { useColorMode } from '../hooks/useColorMode';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
-const theme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: {
-      main: '#1976d2',
-    },
-    secondary: {
-      main: '#f50057',
-    },
-  },
-  typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-  },
-});
-
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const navigate = useNavigate();
+  const { mode, toggleColorMode, theme } = useColorMode();
 
   return (
     <ThemeProvider theme={theme}>
@@ -43,32 +32,39 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <AppBar position="static">
           <Toolbar>
             <VideoIcon sx={{ mr: 2 }} />
-            <Typography 
-              variant="h6" 
-              component="div" 
+            <Typography
+              variant="h6"
+              component="div"
               sx={{ flexGrow: 1, cursor: 'pointer' }}
               onClick={() => navigate('/')}
             >
               Short Video Maker
             </Typography>
-            <Button 
-              color="inherit" 
+            <Button
+              color="inherit"
               startIcon={<AddIcon />}
               onClick={() => navigate('/create')}
+              sx={{ mr: 2 }}
             >
               Create Video
             </Button>
+            <IconButton onClick={toggleColorMode} color="inherit">
+              {mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+            </IconButton>
           </Toolbar>
         </AppBar>
         <Container component="main" sx={{ flexGrow: 1, py: 4 }}>
           {children}
         </Container>
-        <Box 
-          component="footer" 
-          sx={{ 
-            py: 3, 
-            mt: 'auto', 
-            backgroundColor: (theme) => theme.palette.grey[200],
+        <Box
+          component="footer"
+          sx={{
+            py: 3,
+            mt: 'auto',
+            backgroundColor: (theme) =>
+              theme.palette.mode === 'light'
+                ? theme.palette.grey[200]
+                : theme.palette.grey[900],
             textAlign: 'center'
           }}
         >
@@ -81,4 +77,4 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   );
 };
 
-export default Layout; 
+export default Layout;
