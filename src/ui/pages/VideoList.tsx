@@ -124,6 +124,7 @@ const VideoList: React.FC = () => {
               const videoStatus = video?.status || "unknown";
               const videoTitle = `${video?.title ?? "Unknown"} (${videoId})`;
               const videoDescription = video?.description;
+              const createdAt = video?.createdAt;
 
               return (
                 <div key={videoId}>
@@ -173,6 +174,16 @@ const VideoList: React.FC = () => {
                                 sx={{ maxWidth: "80%" }}
                               >
                                 {videoDescription}
+                              </Typography>
+                            )}
+                            {createdAt && (
+                              <Typography
+                                variant="caption"
+                                color="text.disabled"
+                                display="block"
+                                sx={{ mb: 0.5 }}
+                              >
+                                {new Date(createdAt).toLocaleString()}
                               </Typography>
                             )}
                             <VideoStatus

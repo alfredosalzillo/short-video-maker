@@ -64,6 +64,21 @@ const VideoDetails: React.FC = () => {
             variant="body1"
           />
         </Grid>
+        {video?.createdAt && (
+          <Grid
+            size={{
+              xs: 12,
+              sm: 6,
+            }}
+          >
+            <Typography variant="body2" color="text.secondary">
+              Created At
+            </Typography>
+            <Typography variant="body1">
+              {new Date(video.createdAt).toLocaleString()}
+            </Typography>
+          </Grid>
+        )}
         {video && (
           <>
             <Grid

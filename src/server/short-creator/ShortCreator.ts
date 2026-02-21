@@ -56,22 +56,31 @@ export class ShortCreator {
   public getVideoDetails(id: string): VideoMetadata {
     const status = this.status(id);
     const metadataPath = path.join(this.config.videosDirPath, `${id}.json`);
+    const videoPath = this.getVideoPath(id);
 
     let title = "";
     let description = "";
+    let createdAt = "";
 
     const inQueue = this.queue.find((item) => item.id === id);
     if (inQueue) {
       title = inQueue.title;
       description = inQueue.description;
+      createdAt = new Date().toISOString();
     } else if (fs.existsSync(metadataPath)) {
       try {
         const metadata = fs.readJsonSync(metadataPath);
         title = metadata.title;
         description = metadata.description;
+        createdAt = metadata.createdAt;
       } catch (error) {
         logger.error({ id, error }, "Error reading video metadata");
       }
+    }
+
+    if (!createdAt && fs.existsSync(videoPath)) {
+      const stats = fs.statSync(videoPath);
+      createdAt = stats.birthtime.toISOString();
     }
 
     return {
@@ -79,6 +88,7 @@ export class ShortCreator {
       status,
       title,
       description,
+      createdAt,
     };
   }
 
@@ -136,7 +146,11 @@ export class ShortCreator {
       `${videoId}.json`,
     );
     try {
-      await fs.writeJson(metadataPath, { title, description });
+      await fs.writeJson(metadataPath, {
+        title,
+        description,
+        createdAt: new Date().toISOString(),
+      });
       logger.debug({ videoId, metadataPath }, "Video metadata saved");
     } catch (error) {
       logger.error({ videoId, error }, "Error saving video metadata");
@@ -348,11 +362,16 @@ export class ShortCreator {
           status: "processing",
           title: queueItem.title,
           description: queueItem.description,
+          createdAt: new Date().toISOString(),
         });
       }
     }
 
-    return videos;
+    return videos.sort((a, b) => {
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return dateB - dateA;
+    });
   }
 
   public ListAvailableVoices(): string[] {

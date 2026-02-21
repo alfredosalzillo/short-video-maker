@@ -168,6 +168,7 @@ export interface VideoMetadata {
   title: string;
   description: string;
   status: VideoStatus;
+  createdAt?: string;
 }
 
 export type Music = {
