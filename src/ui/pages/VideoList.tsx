@@ -131,9 +131,7 @@ const VideoList: React.FC = () => {
             {videos.map((video, index) => {
               const videoId = video?.id || "";
               const videoStatus = video?.status || "unknown";
-              const videoTitle =
-                `${video?.title} (Video ${videoId.substring(0, 8)}...)` ||
-                `Video ${videoId.substring(0, 8)}...`;
+              const videoTitle = `${video?.title ?? "Unknown"} (Video ${videoId.substring(0, 8)}…)`;
               const videoDescription = video?.description;
 
               return (
@@ -185,7 +183,7 @@ const VideoList: React.FC = () => {
                       {videoStatus === "ready" && (
                         <IconButton
                           edge="end"
-                          aria-label="play"
+                          aria-label="Play Video"
                           onClick={() => handleVideoClick(videoId)}
                           color="primary"
                         >
@@ -194,7 +192,7 @@ const VideoList: React.FC = () => {
                       )}
                       <IconButton
                         edge="end"
-                        aria-label="delete"
+                        aria-label="Delete Video"
                         onClick={(e) => handleDeleteVideo(videoId, e)}
                         color="error"
                         sx={{ ml: 1 }}

@@ -104,7 +104,7 @@ const VideoDetails: React.FC = () => {
       return (
         <Box textAlign="center" py={4}>
           <CircularProgress size={60} sx={{ mb: 2 }} />
-          <Typography variant="h6">Your video is being created...</Typography>
+          <Typography variant="h6">Your Video Is Being Created…</Typography>
           <Typography variant="body1" color="text.secondary">
             This may take a few minutes. Please wait.
           </Typography>
@@ -117,7 +117,7 @@ const VideoDetails: React.FC = () => {
         <Box>
           <Box mb={3} textAlign="center">
             <Typography variant="h6" color="success.main" gutterBottom>
-              Your video is ready!
+              Your Video Is Ready!
             </Typography>
           </Box>
 

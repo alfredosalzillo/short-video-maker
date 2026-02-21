@@ -222,6 +222,7 @@ const VideoCreator: React.FC = () => {
                   onClick={() => handleRemoveScene(index)}
                   color="error"
                   size="small"
+                  aria-label={`Delete Scene ${index + 1}`}
                 >
                   <DeleteIcon />
                 </IconButton>
