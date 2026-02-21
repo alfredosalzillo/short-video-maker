@@ -17,12 +17,14 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
+import { useDialogs } from "@toolpad/core";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import type { VideoMetadata } from "../../types/shorts";
 
 const VideoList: React.FC = () => {
   const navigate = useNavigate();
+  const dialogs = useDialogs();
   const [videos, setVideos] = useState<VideoMetadata[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -56,6 +58,18 @@ const VideoList: React.FC = () => {
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.stopPropagation();
+
+    const confirmed = await dialogs.confirm(
+      "Are you sure you want to delete this video?",
+      {
+        title: "Delete Video",
+        okText: "Delete",
+        cancelText: "Cancel",
+        severity: "error",
+      },
+    );
+
+    if (!confirmed) return;
 
     try {
       await axios.delete(`/api/short-video/${id}`);
