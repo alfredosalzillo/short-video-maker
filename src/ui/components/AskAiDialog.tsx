@@ -118,7 +118,7 @@ const AskAiDialog: FC<DialogProps<void, AskAiDialogResponse | null>> = ({
         Return the result as a JSON object with the following structure:
         {
           "title": "A catchy title",
-          "description": "A brief description for the video",
+          "description": "A brief description for the video, including tags for the platforms (ex. #curiosity)",
           "scenes": [
             {
               "text": "The text to be spoken and displayed in this scene",
