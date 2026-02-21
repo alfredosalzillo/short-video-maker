@@ -143,7 +143,7 @@ const VideoList: React.FC = () => {
             {videos.map((video, index) => {
               const videoId = video?.id || "";
               const videoStatus = video?.status || "unknown";
-              const videoTitle = `${video?.title ?? "Unknown"} (Video ${videoId.substring(0, 8)}…)`;
+              const videoTitle = `${video?.title ?? "Unknown"} (${videoId})`;
               const videoDescription = video?.description;
 
               return (
