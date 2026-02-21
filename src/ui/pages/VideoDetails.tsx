@@ -77,45 +77,45 @@ const VideoDetails: React.FC = () => {
             {capitalizeFirstLetter(video?.status || "unknown")}
           </Typography>
         </Grid>
-        {video?.title && (
-          <Grid
-            size={{
-              xs: 12,
-            }}
-          >
-            <TextField
-              label="Title"
-              value={video.title}
-              fullWidth
-              disabled
-              slotProps={{
-                input: {
-                  endAdornment: <CopyButton value={video.title} edge="end" />,
-                },
+        {video && (
+          <>
+            <Grid
+              size={{
+                xs: 12,
               }}
-              helperText="Only supported by YouTube"
-            />
-          </Grid>
-        )}
-        {video?.description && (
-          <Grid size={{ xs: 12 }}>
-            <TextField
-              label="Description"
-              value={video.description}
-              fullWidth
-              multiline
-              rows={4}
-              disabled
-              slotProps={{
-                input: {
-                  endAdornment: (
-                    <CopyButton value={video.description} edge="end" />
-                  ),
-                },
-              }}
-              helperText="Supported by TikTok, YouTube, Instagram"
-            />
-          </Grid>
+            >
+              <TextField
+                label="Title"
+                value={video.title}
+                fullWidth
+                disabled
+                slotProps={{
+                  input: {
+                    endAdornment: <CopyButton value={video.title} edge="end" />,
+                  },
+                }}
+                helperText="Only supported by YouTube"
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                label="Description"
+                value={video.description}
+                fullWidth
+                multiline
+                rows={4}
+                disabled
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <CopyButton value={video.description} edge="end" />
+                    ),
+                  },
+                }}
+                helperText="Supported by TikTok, YouTube, Instagram"
+              />
+            </Grid>
+          </>
         )}
       </Grid>
       {isLoading && (

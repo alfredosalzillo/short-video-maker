@@ -58,9 +58,16 @@ export class MCPRouter {
       {
         scenes: z.array(sceneInput).describe("Each scene to be created"),
         config: renderConfig.describe("Configuration for rendering the video"),
+        title: z.string().describe("Title of the video"),
+        description: z.string().describe("Description of the video"),
       },
-      async ({ scenes, config }) => {
-        const videoId = await this.shortCreator.addToQueue(scenes, config);
+      async ({ scenes, config, title, description }) => {
+        const videoId = await this.shortCreator.addToQueue(
+          scenes,
+          config,
+          title,
+          description,
+        );
 
         return {
           content: [

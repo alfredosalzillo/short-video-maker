@@ -145,14 +145,14 @@ export type CaptionPage = {
 export const createShortInput = z.object({
   title: z
     .string()
+    .min(1)
     .max(100)
-    .optional()
     .describe(
       "Title of the video, only supported by YouTube. Cannot contain < or > symbols.",
     ),
   description: z
     .string()
-    .optional()
+    .min(1)
     .describe(
       "Description of the video, supported by TikTok, YouTube, Instagram",
     ),
@@ -165,8 +165,8 @@ export type VideoStatus = "processing" | "ready" | "failed";
 
 export interface VideoMetadata {
   id: string;
-  title?: string;
-  description?: string;
+  title: string;
+  description: string;
   status: VideoStatus;
 }
 

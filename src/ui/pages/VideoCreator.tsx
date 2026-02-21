@@ -133,6 +133,7 @@ const VideoCreator: React.FC = () => {
             <Grid size={{ xs: 12 }}>
               <TextField
                 fullWidth
+                required
                 label="Title"
                 value={title}
                 onChange={(e) => {
@@ -152,6 +153,7 @@ const VideoCreator: React.FC = () => {
             <Grid size={{ xs: 12 }}>
               <TextField
                 fullWidth
+                required
                 label="Description"
                 multiline
                 rows={3}

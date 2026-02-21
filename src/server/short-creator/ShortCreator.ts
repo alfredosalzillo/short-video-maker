@@ -29,8 +29,8 @@ export class ShortCreator {
     sceneInput: SceneInput[];
     config: RenderConfig;
     id: string;
-    title?: string;
-    description?: string;
+    title: string;
+    description: string;
   }[] = [];
   constructor(
     private config: Config,
@@ -57,8 +57,8 @@ export class ShortCreator {
     const status = this.status(id);
     const metadataPath = path.join(this.config.videosDirPath, `${id}.json`);
 
-    let title: string | undefined;
-    let description: string | undefined;
+    let title = "";
+    let description = "";
 
     const inQueue = this.queue.find((item) => item.id === id);
     if (inQueue) {
@@ -85,8 +85,8 @@ export class ShortCreator {
   public addToQueue(
     sceneInput: SceneInput[],
     config: RenderConfig,
-    title?: string,
-    description?: string,
+    title: string,
+    description: string,
   ): string {
     // todo add mutex lock
     const id = crypto.randomUUID();
@@ -128,8 +128,8 @@ export class ShortCreator {
 
   private async saveMetadata(
     videoId: string,
-    title?: string,
-    description?: string,
+    title: string,
+    description: string,
   ): Promise<void> {
     const metadataPath = path.join(
       this.config.videosDirPath,
@@ -147,8 +147,8 @@ export class ShortCreator {
     videoId: string,
     inputScenes: SceneInput[],
     config: RenderConfig,
-    title?: string,
-    description?: string,
+    title: string,
+    description: string,
   ): Promise<string> {
     logger.debug(
       {

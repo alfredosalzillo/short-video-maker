@@ -235,6 +235,8 @@ test("test me", async () => {
       },
     ],
     {},
+    "Test Title",
+    "Test Description",
   );
 
   // list videos while the video is being processed
@@ -251,11 +253,12 @@ test("test me", async () => {
   // Wait for the next tick to allow processQueue's finally block to run
   await new Promise((resolve) => setTimeout(resolve, 100));
   // force shifting for the test as something is blocking the queue in the test environment
-  if (shortCreator.queue.length > 0) {
-    shortCreator.queue.shift();
+  const scAny = shortCreator as any;
+  if (scAny.queue.length > 0) {
+    scAny.queue.shift();
   }
   // verify it's removed from queue
-  expect(shortCreator.queue.length).toBe(0);
+  expect(scAny.queue.length).toBe(0);
   videos = shortCreator.listAllVideos();
   expect(videos.find((v) => v.id === videoId)?.status).toBe("ready");
 
