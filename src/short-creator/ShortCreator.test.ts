@@ -103,10 +103,12 @@ vi.mock("kokoro-js", () => {
         ),
       }),
     },
-    TextSplitterStream: vi.fn().mockImplementation(() => ({
-      push: vi.fn(),
-      close: vi.fn(),
-    })),
+    TextSplitterStream: vi.fn().mockImplementation(function () {
+      return {
+        push: vi.fn(),
+        close: vi.fn(),
+      };
+    }),
   };
 });
 

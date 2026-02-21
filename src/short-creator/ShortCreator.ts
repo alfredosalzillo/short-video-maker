@@ -1,4 +1,3 @@
-import cuid from "cuid";
 /* eslint-disable @remotion/deterministic-randomness */
 import fs from "fs-extra";
 import type { Config } from "../config";
@@ -20,6 +19,7 @@ import type { PexelsAPI } from "./libraries/Pexels";
 import type { Remotion } from "./libraries/Remotion";
 import type { Whisper } from "./libraries/Whisper";
 import type { MusicManager } from "./music";
+import crypto from "node:crypto";
 import type http from "node:http";
 import https from "node:https";
 import path from "node:path";
@@ -89,7 +89,7 @@ export class ShortCreator {
     description?: string,
   ): string {
     // todo add mutex lock
-    const id = cuid();
+    const id = crypto.randomUUID();
     this.queue.push({
       sceneInput,
       config,
@@ -181,7 +181,7 @@ export class ShortCreator {
         audioLength += config.paddingBack / 1000;
       }
 
-      const tempId = cuid();
+      const tempId = crypto.randomUUID();
       const tempWavFileName = `${tempId}.wav`;
       const tempMp3FileName = `${tempId}.mp3`;
       const tempVideoFileName = `${tempId}.mp4`;

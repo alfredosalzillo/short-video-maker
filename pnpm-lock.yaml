@@ -56,9 +56,6 @@ importers:
       axios:
         specifier: ^1.13.5
         version: 1.13.5
-      cuid:
-        specifier: ^3.0.0
-        version: 3.0.0
       dotenv:
         specifier: ^17.3.1
         version: 17.3.1
@@ -2106,10 +2103,6 @@ packages:
 
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
-
-  cuid@3.0.0:
-    resolution: {integrity: sha512-WZYYkHdIDnaxdeP8Misq3Lah5vFjJwGuItJuV+tvMafosMzw0nF297T7mrm8IOWiPJkV6gc7sa8pzx27+w25Zg==}
-    deprecated: Cuid and other k-sortable and non-cryptographic ids (Ulid, ObjectId, KSUID, all UUIDs) are all insecure. Use @paralleldrive/cuid2 instead.
 
   data-urls@5.0.0:
     resolution: {integrity: sha512-ZYP5VBHshaDAiVZxjbRVcFJpc+4xGgT0bK3vzy1HLN8jTO975HEbuYzZJcHoQEY5K1a0z8YayJkyVETa08eNTg==}
@@ -5560,8 +5553,6 @@ snapshots:
     optional: true
 
   csstype@3.2.3: {}
-
-  cuid@3.0.0: {}
 
   data-urls@5.0.0:
     dependencies:
