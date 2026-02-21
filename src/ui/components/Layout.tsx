@@ -2,7 +2,6 @@ import type React from "react";
 import { useMemo } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import VideoIcon from "@mui/icons-material/VideoLibrary";
-import { createTheme } from "@mui/material";
 import {
   AppProvider,
   DashboardLayout,
@@ -11,6 +10,7 @@ import {
   ThemeSwitcher,
 } from "@toolpad/core";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import theme from "../theme";
 
 const NAVIGATION: Navigation = [
   {
@@ -29,46 +29,6 @@ const NAVIGATION: Navigation = [
     icon: <AddIcon />,
   },
 ];
-
-const theme = createTheme({
-  cssVariables: {
-    colorSchemeSelector: "data-toolpad-color-scheme",
-  },
-  colorSchemes: {
-    light: {
-      palette: {
-        primary: {
-          main: "#1976d2",
-        },
-        secondary: {
-          main: "#f50057",
-        },
-      },
-    },
-    dark: {
-      palette: {
-        primary: {
-          main: "#90caf9",
-        },
-        secondary: {
-          main: "#f48fb1",
-        },
-      },
-    },
-  },
-  typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-  },
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 600,
-      md: 900,
-      lg: 1200,
-      xl: 1536,
-    },
-  },
-});
 
 interface LayoutProps {
   children?: React.ReactNode;
