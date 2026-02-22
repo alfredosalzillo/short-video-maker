@@ -32,7 +32,7 @@ import {
   type SceneInput,
   VoiceEnum,
 } from "../../types/shorts";
-import AskAiDialog from "../components/AskAiDialog";
+import AskAiDialog from "../plugins/ai-generation/AskAiDialog";
 import { useLocalStorageState } from "../plugins/storage/useLocalStorageState";
 
 interface SceneFormData {
