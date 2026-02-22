@@ -169,6 +169,7 @@ export interface VideoMetadata {
   description: string;
   status: VideoStatus;
   createdAt?: string;
+  orientation?: OrientationEnum;
 }
 
 export type Music = {

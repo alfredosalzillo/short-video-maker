@@ -79,6 +79,21 @@ const VideoDetails: React.FC = () => {
             </Typography>
           </Grid>
         )}
+        {video?.orientation && (
+          <Grid
+            size={{
+              xs: 12,
+              sm: 6,
+            }}
+          >
+            <Typography variant="body2" color="text.secondary">
+              Orientation
+            </Typography>
+            <Typography variant="body1" sx={{ textTransform: "capitalize" }}>
+              {video.orientation}
+            </Typography>
+          </Grid>
+        )}
         {video && (
           <>
             <Grid

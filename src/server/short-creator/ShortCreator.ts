@@ -61,11 +61,13 @@ export class ShortCreator {
     let title = "";
     let description = "";
     let createdAt = "";
+    let orientation: OrientationEnum | undefined = undefined;
 
     const inQueue = this.queue.find((item) => item.id === id);
     if (inQueue) {
       title = inQueue.title;
       description = inQueue.description;
+      orientation = inQueue.config.orientation || OrientationEnum.portrait;
       createdAt = new Date().toISOString();
     } else if (fs.existsSync(metadataPath)) {
       try {
@@ -73,6 +75,7 @@ export class ShortCreator {
         title = metadata.title;
         description = metadata.description;
         createdAt = metadata.createdAt;
+        orientation = metadata.orientation;
       } catch (error) {
         logger.error({ id, error }, "Error reading video metadata");
       }
@@ -89,6 +92,7 @@ export class ShortCreator {
       title,
       description,
       createdAt,
+      orientation,
     };
   }
 
@@ -140,6 +144,7 @@ export class ShortCreator {
     videoId: string,
     title: string,
     description: string,
+    orientation: OrientationEnum,
   ): Promise<void> {
     const metadataPath = path.join(
       this.config.videosDirPath,
@@ -149,6 +154,7 @@ export class ShortCreator {
       await fs.writeJson(metadataPath, {
         title,
         description,
+        orientation,
         createdAt: new Date().toISOString(),
       });
       logger.debug({ videoId, metadataPath }, "Video metadata saved");
@@ -290,7 +296,7 @@ export class ShortCreator {
       fs.removeSync(file);
     }
 
-    await this.saveMetadata(videoId, title, description);
+    await this.saveMetadata(videoId, title, description, orientation);
 
     return videoId;
   }

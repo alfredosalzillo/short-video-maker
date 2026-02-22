@@ -5,6 +5,7 @@ import {
   Alert,
   Box,
   Button,
+  Chip,
   CircularProgress,
   Fab,
   IconButton,
@@ -123,6 +124,7 @@ const VideoList: React.FC = () => {
               const videoTitle = `${video?.title ?? "Unknown"}`;
               const videoDescription = video?.description;
               const createdAt = video?.createdAt;
+              const orientation = video?.orientation;
 
               return (
                 <ListItem
@@ -178,6 +180,18 @@ const VideoList: React.FC = () => {
                             status={videoStatus}
                             sx={{ display: "block", mb: 0.5 }}
                           />
+                          {orientation && (
+                            <Chip
+                              label={orientation}
+                              size="small"
+                              variant="outlined"
+                              sx={{
+                                textTransform: "capitalize",
+                                height: 20,
+                                fontSize: "0.7rem",
+                              }}
+                            />
+                          )}
                         </Box>
                       }
                     />
