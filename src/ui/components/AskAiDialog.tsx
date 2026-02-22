@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import type { DialogProps } from "@toolpad/core";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { createMistral } from "@ai-sdk/mistral";
 import { createOpenAI } from "@ai-sdk/openai";
 import type { LanguageModel as LanguageModelV3 } from "ai";
 import { generateText } from "ai";
@@ -70,6 +71,31 @@ const MODELS = [
     label: "Gemini 2.5 Flash",
     provider: "google",
   },
+  {
+    value: "mistral-large-latest",
+    label: "Mistral Large (latest)",
+    provider: "mistral",
+  },
+  {
+    value: "mistral-medium-latest",
+    label: "Mistral Medium (latest)",
+    provider: "mistral",
+  },
+  {
+    value: "mistral-small-latest",
+    label: "Mistral Small (latest)",
+    provider: "mistral",
+  },
+  {
+    value: "pixtral-large-latest",
+    label: "Pixtral Large (latest)",
+    provider: "mistral",
+  },
+  {
+    value: "mistral-embed",
+    label: "Mistral Embed",
+    provider: "mistral",
+  },
 ];
 
 const AskAiDialog: FC<DialogProps<void, AskAiDialogResponse | null>> = ({
@@ -96,6 +122,9 @@ const AskAiDialog: FC<DialogProps<void, AskAiDialogResponse | null>> = ({
       return createGoogleGenerativeAI({
         apiKey,
       })(modelId);
+    }
+    if (provider === "mistral") {
+      return createMistral({ apiKey })(modelId);
     }
     throw new Error("Unsupported provider");
   };
@@ -173,14 +202,20 @@ const AskAiDialog: FC<DialogProps<void, AskAiDialogResponse | null>> = ({
             label={
               selectedModel?.provider === "openai"
                 ? "OpenAI API Key"
-                : "Gemini API Key"
+                : selectedModel?.provider === "mistral"
+                  ? "Mistral API Key"
+                  : "Gemini API Key"
             }
             type="password"
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
             fullWidth
             placeholder={
-              selectedModel?.provider === "openai" ? "sk-..." : "AIza..."
+              selectedModel?.provider === "openai"
+                ? "sk-..."
+                : selectedModel?.provider === "mistral"
+                  ? "api-key"
+                  : "AIza..."
             }
             disabled={loading}
           />

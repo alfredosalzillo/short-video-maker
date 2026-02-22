@@ -49,6 +49,7 @@
   "license": "MIT",
   "dependencies": {
     "@ai-sdk/google": "^3.0.30",
+    "@ai-sdk/mistral": "^3.0.20",
     "@ai-sdk/openai": "^3.0.30",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
