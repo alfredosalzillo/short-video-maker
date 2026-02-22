@@ -121,10 +121,16 @@ export const generateVideoScript = async ({
 }: GenerateVideoScriptParams): Promise<AskAiDialogResponse> => {
   const aiModel = getAiModel(provider, model, apiKey);
 
+  const durationSeconds = Number.parseInt(duration, 10);
+  const wordsPerSecond = 2.5;
+  const totalWords = Math.floor(durationSeconds * wordsPerSecond);
+
   const { text } = await generateText({
     model: aiModel,
     prompt: `Generate a video script and metadata for a video based on this description: "${description}".
         The video should have a ${videoType} tone and a total duration of approximately ${duration} seconds.
+        The script should contain a total of approximately ${totalWords} words to fit the duration.
+        In the scene text, use only standard punctuation (e.g. . , ! ?) and do not use special characters that cannot be synthesized by voice (e.g. * # _ -).
         Return the result as a JSON object with the following structure:
         {
           "title": "A catchy title",
