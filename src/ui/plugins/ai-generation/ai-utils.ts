@@ -105,6 +105,7 @@ type GenerateVideoScriptParams = {
   model: string;
   apiKey: string;
   description: string;
+  suggestion?: string;
   videoType: string;
   duration: string;
   numScenes: string;
@@ -115,6 +116,7 @@ export const generateVideoScript = async ({
   model,
   apiKey,
   description,
+  suggestion,
   videoType,
   duration,
   numScenes,
@@ -125,16 +127,24 @@ export const generateVideoScript = async ({
   const wordsPerSecond = 2.5;
   const totalWords = Math.floor(durationSeconds * wordsPerSecond);
 
+  const suggestionText = suggestion
+    ? `Suggestion for the scenes: "${suggestion}".`
+    : "";
+
+  const videoTypeSuggestion = `The video should have a ${videoType} tone and style. Ensure that the script and search terms reflect this ${videoType} atmosphere.`;
+
   const { text } = await generateText({
     model: aiModel,
     prompt: `Generate a video script and metadata for a video based on this description: "${description}".
-        The video should have a ${videoType} tone and a total duration of approximately ${duration} seconds.
+        ${suggestionText}
+        ${videoTypeSuggestion}
+        The total duration should be approximately ${duration} seconds.
         The script should contain a total of approximately ${totalWords} words to fit the duration.
         In the scene text, use only standard punctuation (e.g. . , ! ?) and do not use special characters that cannot be synthesized by voice (e.g. * # _ -).
         Return the result as a JSON object with the following structure:
         {
           "title": "A catchy title",
-          "description": "A brief description for the video, including tags for the platforms (ex. #curiosity)",
+          "description": "A brief description for the video, including tags for the platforms (ex. #curiosity, max 3 tags)",
           "scenes": [
             {
               "text": "The text to be spoken and displayed in this scene",

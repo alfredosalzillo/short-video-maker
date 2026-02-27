@@ -27,6 +27,7 @@ const AskAiDialog: FC<DialogProps<void, AskAiDialogResponse | null>> = ({
   const [model, setModel] = useLocalStorageState("ai-model", "gpt-4o");
   const [apiKey, setApiKey] = useLocalStorageState("ai-api-key", "");
   const [description, setDescription] = useState("");
+  const [suggestion, setSuggestion] = useState("");
   const [duration, setDuration] = useState("60");
   const [numScenes, setNumScenes] = useState("6");
   const [videoType, setVideoType] = useState("fun");
@@ -50,6 +51,7 @@ const AskAiDialog: FC<DialogProps<void, AskAiDialogResponse | null>> = ({
         model,
         apiKey,
         description,
+        suggestion,
         videoType,
         duration,
         numScenes,
@@ -122,6 +124,17 @@ const AskAiDialog: FC<DialogProps<void, AskAiDialogResponse | null>> = ({
             onChange={(e) => setDescription(e.target.value)}
             fullWidth
             placeholder="e.g. A motivational video about technology and the future"
+            disabled={loading}
+          />
+
+          <TextField
+            label="Scene Suggestions"
+            multiline
+            rows={2}
+            value={suggestion}
+            onChange={(e) => setSuggestion(e.target.value)}
+            fullWidth
+            placeholder="e.g. Include specific facts about AI progress"
             disabled={loading}
           />
 
