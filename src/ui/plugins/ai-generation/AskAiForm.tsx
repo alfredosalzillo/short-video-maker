@@ -10,20 +10,13 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useLocalStorageState } from "../storage/useLocalStorageState";
-import {
-  type AskAiDialogResponse,
-  generateVideoScript,
-  MODELS,
-} from "./ai-utils";
+import { type AskAiDialogResponse, generateVideoScript } from "./ai-utils";
 
 type AskAiFormProps = {
   onClose: (result: AskAiDialogResponse | null) => void;
 };
 
 const AskAiForm: FC<AskAiFormProps> = ({ onClose }) => {
-  const [model, setModel] = useLocalStorageState("ai-model", "gpt-4o");
-  const [apiKey, setApiKey] = useLocalStorageState("ai-api-key", "");
   const [description, setDescription] = useState("");
   const [suggestion, setSuggestion] = useState("");
   const [duration, setDuration] = useState("60");
@@ -32,11 +25,9 @@ const AskAiForm: FC<AskAiFormProps> = ({ onClose }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const selectedModel = MODELS.find((m) => m.value === model);
-
   const handleGenerate = async () => {
-    if (!apiKey || !description) {
-      setError("Please provide both API key and video description");
+    if (!description) {
+      setError("Please provide a video description");
       return;
     }
 
@@ -45,9 +36,6 @@ const AskAiForm: FC<AskAiFormProps> = ({ onClose }) => {
 
     try {
       const parsedResult = await generateVideoScript({
-        provider: selectedModel?.provider || "",
-        model,
-        apiKey,
         description,
         suggestion,
         videoType,
@@ -102,48 +90,10 @@ const AskAiForm: FC<AskAiFormProps> = ({ onClose }) => {
         }}
       >
         <Typography variant="body2" color="text.secondary">
-          Provide your AI model details and a description of what you want the
-          video to be about.
+          Provide a description of what you want the video to be about.
         </Typography>
 
         {error && <Alert severity="error">{error}</Alert>}
-
-        <TextField
-          select
-          label="AI Model"
-          value={model}
-          onChange={(e) => setModel(e.target.value)}
-          fullWidth
-          disabled={loading}
-        >
-          {MODELS.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </TextField>
-
-        <TextField
-          label={
-            selectedModel?.provider === "openai"
-              ? "OpenAI API Key"
-              : selectedModel?.provider === "mistral"
-                ? "Mistral API Key"
-                : "Gemini API Key"
-          }
-          type="password"
-          value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
-          fullWidth
-          placeholder={
-            selectedModel?.provider === "openai"
-              ? "sk-..."
-              : selectedModel?.provider === "mistral"
-                ? "api-key"
-                : "AIza..."
-          }
-          disabled={loading}
-        />
 
         <TextField
           label="Video Description"

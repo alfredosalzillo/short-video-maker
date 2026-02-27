@@ -1,6 +1,4 @@
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { createMistral } from "@ai-sdk/mistral";
-import { createOpenAI } from "@ai-sdk/openai";
 import { generateText, type LanguageModel as LanguageModelV3 } from "ai";
 
 export type AskAiDialogResponse = {
@@ -13,97 +11,26 @@ export type AskAiDialogResponse = {
 };
 
 export const MODELS = [
-  { value: "gpt-4o", label: "GPT-4o", provider: "openai" },
-  { value: "gpt-4o-mini", label: "GPT-4o Mini", provider: "openai" },
-  { value: "o3-mini", label: "o3-mini", provider: "openai" },
-  { value: "gemini-1.5-flash", label: "Gemini 1.5 Flash", provider: "google" },
-  {
-    value: "gemini-1.5-flash-latest",
-    label: "Gemini 1.5 Flash (latest)",
-    provider: "google",
-  },
-  { value: "gemini-1.5-pro", label: "Gemini 1.5 Pro", provider: "google" },
-  {
-    value: "gemini-1.5-pro-latest",
-    label: "Gemini 1.5 Pro (latest)",
-    provider: "google",
-  },
-  { value: "gemini-2.0-flash", label: "Gemini 2.0 Flash", provider: "google" },
-  {
-    value: "gemini-2.0-flash-lite",
-    label: "Gemini 2.0 Flash Lite",
-    provider: "google",
-  },
-  {
-    value: "gemini-2.0-pro-exp-02-05",
-    label: "Gemini 2.0 Pro Exp (02-05)",
-    provider: "google",
-  },
-  {
-    value: "gemini-2.0-flash-thinking-exp-01-21",
-    label: "Gemini 2.0 Flash Thinking Exp",
-    provider: "google",
-  },
-  {
-    value: "gemini-2.5-pro",
-    label: "Gemini 2.5 Pro",
-    provider: "google",
-  },
-  {
-    value: "gemini-2.5-flash",
-    label: "Gemini 2.5 Flash",
-    provider: "google",
-  },
   {
     value: "mistral-large-latest",
     label: "Mistral Large (latest)",
     provider: "mistral",
   },
-  {
-    value: "mistral-medium-latest",
-    label: "Mistral Medium (latest)",
-    provider: "mistral",
-  },
-  {
-    value: "mistral-small-latest",
-    label: "Mistral Small (latest)",
-    provider: "mistral",
-  },
-  {
-    value: "pixtral-large-latest",
-    label: "Pixtral Large (latest)",
-    provider: "mistral",
-  },
-  {
-    value: "mistral-embed",
-    label: "Mistral Embed",
-    provider: "mistral",
-  },
 ];
 
-export const getAiModel = (
-  provider: string,
-  modelId: string,
-  apiKey: string,
-): LanguageModelV3 => {
-  if (provider === "openai") {
-    return createOpenAI({ apiKey })(modelId);
+export const getAiModel = (apiKey?: string): LanguageModelV3 => {
+  const finalApiKey = apiKey || import.meta.env.VITE_MISTRAL_API_KEY;
+
+  if (!finalApiKey) {
+    throw new Error(
+      "Mistral API key is missing. Please set VITE_MISTRAL_API_KEY in your .env file.",
+    );
   }
-  if (provider === "google") {
-    return createGoogleGenerativeAI({
-      apiKey,
-    })(modelId);
-  }
-  if (provider === "mistral") {
-    return createMistral({ apiKey })(modelId);
-  }
-  throw new Error("Unsupported provider");
+
+  return createMistral({ apiKey: finalApiKey })("mistral-large-latest");
 };
 
 type GenerateVideoScriptParams = {
-  provider: string;
-  model: string;
-  apiKey: string;
   description: string;
   suggestion?: string;
   videoType: string;
@@ -112,16 +39,13 @@ type GenerateVideoScriptParams = {
 };
 
 export const generateVideoScript = async ({
-  provider,
-  model,
-  apiKey,
   description,
   suggestion,
   videoType,
   duration,
   numScenes,
 }: GenerateVideoScriptParams): Promise<AskAiDialogResponse> => {
-  const aiModel = getAiModel(provider, model, apiKey);
+  const aiModel = getAiModel();
 
   const durationSeconds = Number.parseInt(duration, 10);
   const wordsPerSecond = 2.5;

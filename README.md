@@ -95,6 +95,7 @@ Shorts Creator takes simple text inputs and search terms, then:
 
 - internet
 - free pexels api key
+- mistral api key (for "Ask AI" feature)
 - ≥ 3 gb free RAM, my recommendation is 4gb RAM
 - ≥ 2 vCPU
 - ≥ 5gb disc space
@@ -214,10 +215,11 @@ You can load it on http://localhost:3123
 
 ## 🟢 Configuration
 
-| key             | description                                                     | default |
-| --------------- | --------------------------------------------------------------- | ------- |
-| PEXELS_API_KEY  | [your (free) Pexels API key](https://www.pexels.com/api/)       |         |
-| LOG_LEVEL       | pino log level                                                  | info    |
+| key                  | description                                                     | default |
+| -------------------- | --------------------------------------------------------------- | ------- |
+| PEXELS_API_KEY       | [your (free) Pexels API key](https://www.pexels.com/api/)       |         |
+| VITE_MISTRAL_API_KEY | [your Mistral API key](https://console.mistral.ai/)             |         |
+| LOG_LEVEL            | pino log level                                                  | info    |
 | WHISPER_VERBOSE | whether the output of whisper.cpp should be forwarded to stdout | false   |
 | PORT            | the port the server will listen on                              | 3123    |
 
